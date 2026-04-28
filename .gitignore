@@ -1,0 +1,24 @@
+# Claude Code (configuración local con permisos/credenciales — nunca subir)
+.claude/
+.claude_backup/
+
+# Backups y temporales
+*.bak
+*.backup
+*.broken-*
+*.tmp
+*.swp
+*~
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.code-workspace
+
+# Logs
+*.log
