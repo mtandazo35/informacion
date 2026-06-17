@@ -1,0 +1,26 @@
+From c2f96e8404a2d09278a7ccba028d18e1b1c1010a Mon Sep 17 00:00:00 2001
+From: Manuel Tandazo <manuel_tandazo16@hotmail.com>
+Date: Sat, 16 May 2026 22:45:25 -0400
+Subject: [PATCH 2/2] chore: gitignore .env backups y snapshots
+
+---
+ .gitignore | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/.gitignore b/.gitignore
+index 938bf48..f007395 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -1,4 +1,9 @@
+ # Variables de entorno (nunca commitear)
++# Backups de .env (timestamp) — NUNCA versionar
++*.env.bak*
++*.env.snapshot*
++*.bak.audit
++
+ .env
+ .env.*
+ !.env.example
+-- 
+2.39.5
+

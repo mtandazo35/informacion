@@ -1,0 +1,7 @@
+configure terminal
+interface gpon 0/1
+show pon rx_power onu ?
+show pon rx_power onu all
+show pon rx_power onu 1
+show pon rx_power onu 1-44
+exit

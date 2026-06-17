@@ -1,0 +1,57 @@
+configure terminal
+interface gpon 0/1
+show pon 1 transceiver-info
+show pon 1 optical
+show pon 1 rx_power
+show pon 1 state
+show onu 1-128 optical_info
+exit
+interface gpon 0/2
+show pon 2 transceiver-info
+show pon 2 optical
+show pon 2 rx_power
+show pon 2 state
+show onu 1-128 optical_info
+exit
+interface gpon 0/3
+show pon 3 transceiver-info
+show pon 3 optical
+show pon 3 rx_power
+show pon 3 state
+show onu 1-128 optical_info
+exit
+interface gpon 0/4
+show pon 4 transceiver-info
+show pon 4 optical
+show pon 4 rx_power
+show pon 4 state
+show onu 1-128 optical_info
+exit
+interface gpon 0/5
+show pon 5 transceiver-info
+show pon 5 optical
+show pon 5 rx_power
+show pon 5 state
+show onu 1-128 optical_info
+exit
+interface gpon 0/6
+show pon 6 transceiver-info
+show pon 6 optical
+show pon 6 rx_power
+show pon 6 state
+show onu 1-128 optical_info
+exit
+interface gpon 0/7
+show pon 7 transceiver-info
+show pon 7 optical
+show pon 7 rx_power
+show pon 7 state
+show onu 1-128 optical_info
+exit
+interface gpon 0/8
+show pon 8 transceiver-info
+show pon 8 optical
+show pon 8 rx_power
+show pon 8 state
+show onu 1-128 optical_info
+exit

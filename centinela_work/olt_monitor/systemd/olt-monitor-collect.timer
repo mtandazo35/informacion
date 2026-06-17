@@ -1,0 +1,14 @@
+[Unit]
+Description=OLT Optical Monitor — schedule every 20 minutes
+Requires=olt-monitor-collect.service
+
+[Timer]
+# Fires every 20 minutes on the wall clock (xx:00, xx:20, xx:40).
+# OnCalendar plays nicely with Persistent=true (catches up missed runs after downtime).
+OnCalendar=*:00/20
+RandomizedDelaySec=30s
+Persistent=true
+Unit=olt-monitor-collect.service
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,20 @@
+[Unit]
+Description=OLT Optical Monitor — web report server
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/olt_monitor
+EnvironmentFile=-/etc/default/olt-monitor
+# Reads optional OLT_MONITOR_AUTH=user:pass from the EnvironmentFile.
+# The serve subcommand has --auth flag and also falls back to this env var.
+ExecStart=/usr/bin/python3 /opt/olt_monitor/monitor.py serve --host ${BIND_HOST} --port ${BIND_PORT}
+Restart=on-failure
+RestartSec=5s
+StandardOutput=append:/var/log/olt-monitor-web.log
+StandardError=append:/var/log/olt-monitor-web.log
+User=root
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,1681 @@
+From b98640d5a1f9e1d55d6963676f722010b63a1ff3 Mon Sep 17 00:00:00 2001
+From: Manuel Tandazo <manuel_tandazo16@hotmail.com>
+Date: Sat, 16 May 2026 22:34:13 -0400
+Subject: [PATCH] =?UTF-8?q?feat:=20integracion=20completa=20Centinela=20?=
+ =?UTF-8?q?=E2=86=94=20Grafana=20+=20rotacion=20de=20token=20+=20UX=20depl?=
+ =?UTF-8?q?oy?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Backend (CentinelaBack):
+- tokens: PATCH /tokens/:id/rotate-token (valida vs Technitium antes de cifrar)
+- tokens: POST /tokens/:id/refresh-monitoring (regenera prometheus.yml en VPS via SSH)
+- clientes: GET /clientes/check-cedula (validacion live de duplicados)
+- clientes: POST /clientes/:id/grafana/provision (re-provisionar Grafana legacy)
+- clientes: update() propaga password/username/empresa a Grafana
+  - pre-check uniqueness, dedup userId/orgId
+  - critico (password/username) hace throw, BD no se commitea
+  - best-effort (rename org + datasource + ds espejo en MAAT) reporta warnings
+- grafana: helpers updateUserPassword/Login/renameOrg/lookupUserByLogin/renameDatasourceByUrl
+- grafana: provisionForToken propaga miembros de MAAT, replica ds en MAAT, setea home dashboard
+- onboarding: tipoDocumento llega correctamente al validate (faltaba en payload)
+- onboarding: username Grafana = inicial(nombre)+apellido (antes era cli_<cedula>)
+- vps-provisioning + onboarding: SSE stream con heartbeat 15s (evita Stream cerrado)
+- install-script: prometheus.yml con instance=<IP_publica>:9100 (no localhost)
+- grafana/config: GET /grafana/config/public-url para auto-rellenar form
+
+Frontend (CentinelaFrom):
+- clientes: validacion live de cedula con debounce + icono check/error
+- clientes: watcher auto-genera Usuario Grafana desde nombre+apellido
+- clientes: auto-rellena URL Grafana publica
+- clientes: modal deploy adaptativo
+  - hero state celebratorio al completar (check + IP + URL Grafana copiables)
+  - footer adaptativo (Minimizar/Cerrar/Reintentar/Abrir Grafana segun estado)
+  - widget flotante con :seamless cuando deploy en curso (app desbloqueada)
+  - sin auto-close, el user decide cuando cerrar
+- clientes: boton 'Provisionar/Repetir Grafana' para legacy
+- clientes: toast con grafanaWarnings si propagacion parcial fallo
+- servicios: boton 'Sincronizar monitoreo' por fila
+- tokens: deep-link ?id=<X> abre modal Editar directo
+- tokens: feature Rotar token (campo + boton + validacion vs Technitium)
+
+Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
+---
+ .../client-onboarding.service.ts              |  44 ++-
+ .../src/clientes/clientes.controller.ts       |  15 +
+ CentinelaBack/src/clientes/clientes.module.ts |   3 +-
+ .../src/clientes/clientes.service.ts          | 270 +++++++++++++++++-
+ .../src/grafana/grafana-config.controller.ts  |  10 +
+ CentinelaBack/src/grafana/grafana.service.ts  | 155 +++++++++-
+ .../src/tokens/dto/rotate-token.dto.ts        |  19 ++
+ CentinelaBack/src/tokens/tokens.controller.ts |  16 ++
+ CentinelaBack/src/tokens/tokens.module.ts     |   2 +
+ CentinelaBack/src/tokens/tokens.service.ts    | 113 ++++++++
+ .../src/vps-provisioning/install-script.ts    |  17 +-
+ .../vps-provisioning.service.ts               |  10 +-
+ .../administration/clientes/IndexPage.vue     | 253 +++++++++++++++-
+ .../clientes/ServiciosPanel.vue               |  25 ++
+ .../pages/administration/tokens/IndexPage.vue |  26 ++
+ .../tokens/components/FormTokens.vue          |  92 +++++-
+ .../tokens/composables/useTokens.js           |  26 +-
+ 17 files changed, 1068 insertions(+), 28 deletions(-)
+ create mode 100644 CentinelaBack/src/tokens/dto/rotate-token.dto.ts
+
+diff --git a/CentinelaBack/src/client-onboarding/client-onboarding.service.ts b/CentinelaBack/src/client-onboarding/client-onboarding.service.ts
+index 820d59d..3242917 100644
+--- a/CentinelaBack/src/client-onboarding/client-onboarding.service.ts
++++ b/CentinelaBack/src/client-onboarding/client-onboarding.service.ts
+@@ -6,7 +6,7 @@ import {
+ } from '@nestjs/common';
+ import { InjectRepository } from '@nestjs/typeorm';
+ import { Repository } from 'typeorm';
+-import { Observable, ReplaySubject } from 'rxjs';
++import { Observable, ReplaySubject, interval, Subscription } from 'rxjs';
+ import * as crypto from 'crypto';
+ 
+ import { ClientOnboarding, OnboardingStatus } from './entities/client-onboarding.entity';
+@@ -142,7 +142,7 @@ export class ClientOnboardingService {
+       }
+ 
+       const cedula = String(dto.cliente.cedula || '').trim();
+-      const grafanaUsuario = cedula ? `cli_${cedula}` : `cli_${Date.now()}`;
++      const grafanaUsuario = this.buildClientUsername(dto.cliente.nombre, dto.cliente.apellido, cedula);
+       const generatedPass = this.randomPassword(16);
+ 
+       if (dto.cliente.id) {
+@@ -153,6 +153,10 @@ export class ClientOnboardingService {
+         const createPayload: any = {
+           nombre: dto.cliente.nombre,
+           apellido: dto.cliente.apellido,
++          // tipoDocumento: critico para validar bien el formato del cedula/RUC/pasaporte.
++          // Sin esto, clientes.service.validate defaulta a CEDULA (10 digitos) y rechaza
++          // RUCs (13 digitos) y pasaportes (alfanumericos).
++          tipoDocumento: dto.cliente.tipoDocumento || 'CEDULA',
+           cedula: dto.cliente.cedula,
+           empresa: dto.cliente.empresa || null,
+           direccion: dto.cliente.direccion || null,
+@@ -336,6 +340,9 @@ export class ClientOnboardingService {
+         nombreToken: clientName,
+         prometheusUrl: `http://${dto.vps.host}:9090`,
+         emailCliente: userEmail,
++        // Username explicito (inicial+apellido) — sin esto GrafanaService usa
++        // slug(nombreToken)+"-viewer" que queda raro y no matchea el `cliente.grafanaUsuario`.
++        username: this.buildClientUsername(cliente!.nombre, cliente!.apellido, cliente!.cedula),
+       });
+       grafanaPlainPassword = grafanaResult.password;
+ 
+@@ -352,10 +359,13 @@ export class ClientOnboardingService {
+         this.logger.warn(`No persistio grafana IDs en token ${tokenEntity!.id}: ${e?.message}`);
+       }
+ 
+-      // Construir grafanaUrl pretty
++      // URL Grafana del cliente: queremos la MISMA para todos los clientes — el
++      // login propio del user (creado en el paso 3) ya determina su org en
++      // Grafana, asi que un solo URL publico es suficiente y mas simple de
++      // comunicar al cliente. Antes pegabamos `?orgId=` pero eso confundia.
+       const cfg = await this.grafanaConfigService.getResolved();
+       const baseUrl = cfg?.publicUrl || cfg?.url || '';
+-      const grafanaPrettyUrl = baseUrl ? `${baseUrl}/?orgId=${grafanaResult.orgId}` : (grafanaResult.dashboardUrl || grafanaResult.loginUrl || null);
++      const grafanaPrettyUrl = baseUrl || grafanaResult.loginUrl || null;
+ 
+       // Update Cliente
+       cliente!.grafanaUsuario = grafanaResult.username;
+@@ -545,7 +555,14 @@ export class ClientOnboardingService {
+           complete: () => subscriber.complete(),
+           error: (e) => subscriber.error(e),
+         });
+-        unsub = () => sub.unsubscribe();
++        // Heartbeat: SSE keepalive cada 15s. El front parsea data como JSON,
++        // si falla lo ignora silenciosamente — perfecto para keepalive sin
++        // ensuciar la UI. Sin esto, durante el silencio del install remoto
++        // (3+ min) el navegador cierra el stream con onerror.
++        const heartbeatSub: Subscription = interval(15_000).subscribe(() => {
++          subscriber.next({ data: ':ka' });
++        });
++        unsub = () => { sub.unsubscribe(); heartbeatSub.unsubscribe(); };
+       } else {
+         this.repo
+           .findOne({ where: { id: onboardingId } })
+@@ -733,6 +750,23 @@ export class ClientOnboardingService {
+     return stripped;
+   }
+ 
++  /**
++   * Genera el username de Grafana del cliente: inicial del nombre + apellido.
++   * Normaliza acentos (Pérez → perez), espacios (de la Cruz → delacruz), y limita
++   * a chars validos para Grafana login (a-z, 0-9, _, ., -). Fallback a `cli_<cedula>`
++   * si los datos del cliente son insuficientes — asi no rompemos el flujo si vienen
++   * vacios desde un import legacy.
++   */
++  private buildClientUsername(nombre?: string, apellido?: string, cedula?: string): string {
++    const norm = (s?: string) =>
++      (s || '').toString().normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
++    const initial = norm(nombre).trim()[0] || '';
++    const last = norm(apellido).replace(/\s+/g, '').replace(/[^a-z0-9_.-]/g, '');
++    const u = (initial + last).slice(0, 64);
++    if (u && u.length >= 3) return u;
++    return cedula ? `cli_${cedula}` : `cli_${Date.now()}`;
++  }
++
+   private randomPassword(len: number): string {
+     const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789';
+     const buf = crypto.randomBytes(len);
+diff --git a/CentinelaBack/src/clientes/clientes.controller.ts b/CentinelaBack/src/clientes/clientes.controller.ts
+index 4f5db49..3ef3e91 100644
+--- a/CentinelaBack/src/clientes/clientes.controller.ts
++++ b/CentinelaBack/src/clientes/clientes.controller.ts
+@@ -12,6 +12,15 @@ export class ClientesController {
+     return this.svc.findAll({ page: Number(page), limit: Number(limit), search, isActive });
+   }
+ 
++  @Auth('index.clientes')
++  @Get('check-cedula')
++  checkCedula(
++    @Query('cedula') cedula: string,
++    @Query('excludeId') excludeId?: string,
++  ) {
++    return this.svc.checkCedula(cedula, excludeId);
++  }
++
+   @Auth('index.clientes')
+   @Get(':id')
+   findOne(@Param('id', ParseUUIDPipe) id: string) {
+@@ -42,6 +51,12 @@ export class ClientesController {
+     return this.svc.getGrafanaCredentials(id);
+   }
+ 
++  @Auth('editar.clientes')
++  @Post(':id/grafana/provision')
++  provisionGrafana(@Param('id', ParseUUIDPipe) id: string) {
++    return this.svc.provisionGrafana(id);
++  }
++
+   @Auth('index.clientes')
+   @Get(':id/servicios')
+   servicios(@Param('id', ParseUUIDPipe) id: string) {
+diff --git a/CentinelaBack/src/clientes/clientes.module.ts b/CentinelaBack/src/clientes/clientes.module.ts
+index fb666c2..35bf4ad 100644
+--- a/CentinelaBack/src/clientes/clientes.module.ts
++++ b/CentinelaBack/src/clientes/clientes.module.ts
+@@ -6,9 +6,10 @@ import { Cliente } from './entities/cliente.entity';
+ import { Plan } from '../planes/entities/plan.entity';
+ import { Token } from '../tokens/entities/token.entity';
+ import { AuditLog } from '../audit/entities/audit-log.entity';
++import { GrafanaModule } from '../grafana/grafana.module';
+ 
+ @Module({
+-  imports: [TypeOrmModule.forFeature([Cliente, Plan, Token, AuditLog])],
++  imports: [TypeOrmModule.forFeature([Cliente, Plan, Token, AuditLog]), GrafanaModule],
+   controllers: [ClientesController],
+   providers: [ClientesService],
+   exports: [ClientesService, TypeOrmModule],
+diff --git a/CentinelaBack/src/clientes/clientes.service.ts b/CentinelaBack/src/clientes/clientes.service.ts
+index 1746d95..2f65821 100644
+--- a/CentinelaBack/src/clientes/clientes.service.ts
++++ b/CentinelaBack/src/clientes/clientes.service.ts
+@@ -6,6 +6,8 @@ import axios from 'axios';
+ import { Cliente, TipoDocumento } from './entities/cliente.entity';
+ import { Token } from '../tokens/entities/token.entity';
+ import { encryptSecret, decryptSecret, isEncrypted } from '../common/crypto';
++import { GrafanaService } from '../grafana/grafana.service';
++import { GrafanaConfigService } from '../grafana/grafana-config.service';
+ 
+ const TEL_RE = /^[+0-9\s\-()]{7,30}$/;
+ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+@@ -22,6 +24,8 @@ export class ClientesService {
+     private readonly tokenRepo: Repository<Token>,
+     @InjectRepository(AuditLog)
+     private readonly auditRepo: Repository<AuditLog>,
++    private readonly grafanaService: GrafanaService,
++    private readonly grafanaConfigService: GrafanaConfigService,
+   ) {}
+ 
+   private validate(dto: any) {
+@@ -84,6 +88,51 @@ export class ClientesService {
+     return out;
+   }
+ 
++  /**
++   * Disponibilidad de cedula — usado por el form del front para validar en
++   * vivo antes de disparar el pipeline. Devolvemos un payload minimal: si
++   * existe, incluimos solo nombre+apellido+id (no datos sensibles) para que
++   * el front pueda renderizar "Ya registrada: Nombre Apellido".
++   *
++   * `excludeId` permite saltar el chequeo en modo edicion (cuando el cliente
++   * actual ya tiene esa cedula y no es un duplicado).
++   */
++  /**
++   * Helper: username de Grafana del cliente. inicial(nombre) + apellido,
++   * normalizado (sin acentos, espacios, especiales). Fallback a cli_<cedula>
++   * cuando los datos no alcanzan.
++   */
++  private buildClientUsername(nombre?: string, apellido?: string, cedula?: string): string {
++    const norm = (s?: string) =>
++      (s || '').toString().normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
++    const initial = norm(nombre).trim()[0] || '';
++    const last = norm(apellido).replace(/\s+/g, '').replace(/[^a-z0-9_.-]/g, '');
++    const u = (initial + last).slice(0, 64);
++    if (u && u.length >= 3) return u;
++    return cedula ? `cli_${cedula}` : `cli_${Date.now()}`;
++  }
++
++  /** Helper: password aleatorio (mismo formato que onboarding) */
++  private randomPasswordPlain(len = 16): string {
++    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789!@$';
++    let out = '';
++    for (let i = 0; i < len; i++) out += chars[Math.floor(Math.random() * chars.length)];
++    return out;
++  }
++
++  async checkCedula(cedula: string, excludeId?: string) {
++    const v = String(cedula || '').trim();
++    if (!v) return { available: false, reason: 'cedula vacia' };
++    const qb = this.repo.createQueryBuilder('c').where('c.cedula = :v', { v });
++    if (excludeId) qb.andWhere('c.id <> :id', { id: excludeId });
++    const existing = await qb.select(['c.id', 'c.nombre', 'c.apellido']).getOne();
++    if (!existing) return { available: true };
++    return {
++      available: false,
++      owner: { id: existing.id, nombre: existing.nombre, apellido: existing.apellido },
++    };
++  }
++
+   async create(dto: any) {
+     this.validate(dto);
+     const exists = await this.repo.findOne({ where: { cedula: dto.cedula } });
+@@ -98,8 +147,12 @@ export class ClientesService {
+       direccion: dto.direccion || null,
+       telefono: dto.telefono || null,
+       correo: dto.correo || null,
+-      grafanaUsuario: dto.grafanaUsuario || null,
+-      grafanaPassword: dto.grafanaPassword ? encryptSecret(String(dto.grafanaPassword)) : null,
++      grafanaUsuario: dto.grafanaUsuario || this.buildClientUsername(dto.nombre, dto.apellido, dto.cedula),
++      // Si vino password explicito → cifrarlo. Si no → generar uno aleatorio
++      // cifrado SOLO cuando grafanaActivo. Si Grafana no esta activo dejamos null.
++      grafanaPassword: dto.grafanaPassword
++        ? encryptSecret(String(dto.grafanaPassword))
++        : (dto.grafanaActivo ? encryptSecret(this.randomPasswordPlain(16)) : null),
+       grafanaUrl: dto.grafanaUrl || null,
+       grafanaActivo: !!dto.grafanaActivo,
+       planId: dto.planId || null,
+@@ -186,6 +239,19 @@ export class ClientesService {
+       const exists = await this.repo.findOne({ where: { cedula: dto.cedula } });
+       if (exists) throw new BadRequestException('Ya existe un cliente con esa cedula');
+     }
++
++    // SNAPSHOT ANTES de aplicar — necesario para detectar cambios y propagar
++    // a Grafana antes de commitear BD (evita desync si Grafana rechaza).
++    const before = {
++      grafanaUsuario: c.grafanaUsuario,
++      empresa: c.empresa,
++      nombre: c.nombre,
++      apellido: c.apellido,
++    };
++    const buildOrgName = (n?: string | null, a?: string | null, e?: string | null) =>
++      (e && e.trim()) ? e.trim() : `${(n || '').trim()} ${(a || '').trim()}`.trim();
++    const oldOrgName = buildOrgName(before.nombre, before.apellido, before.empresa);
++
+     const { grafanaPassword, diaSuspension, ...rest } = dto;
+     Object.assign(c, rest);
+     if (grafanaPassword !== undefined && grafanaPassword !== null && grafanaPassword !== '') {
+@@ -194,8 +260,106 @@ export class ClientesService {
+     if (diaSuspension !== undefined) {
+       c.diaSuspension = diaSuspension === null || diaSuspension === '' ? null : Number(diaSuspension);
+     }
++
++    // ============ PROPAGACION A GRAFANA ============
++    const newOrgName = buildOrgName(c.nombre, c.apellido, c.empresa);
++    const usernameChanged = !!(c.grafanaUsuario && c.grafanaUsuario !== before.grafanaUsuario);
++    const orgNameChanged = !!newOrgName && newOrgName !== oldOrgName;
++    const passwordChanged = grafanaPassword !== undefined && grafanaPassword !== null && grafanaPassword !== '';
++
++    const warnings: string[] = [];
++
++    if (passwordChanged || usernameChanged || orgNameChanged) {
++      const tokens = await this.tokenRepo.find({ where: { clienteId: id } });
++      const tokensWithGrafana = tokens.filter((t) => t.grafanaUserId && t.grafanaOrgId);
++
++      if (tokensWithGrafana.length) {
++        // Dedupe: un cliente puede tener N tokens pero idealmente UN solo user
++        // global en Grafana (con N memberships). Lo mismo para orgs: cada token
++        // tiene su Org, pero algunas pueden compartirla.
++        const userIds = [...new Set(tokensWithGrafana.map((t) => t.grafanaUserId as number).filter(Boolean))];
++        const orgIds = [...new Set(tokensWithGrafana.map((t) => t.grafanaOrgId as number).filter(Boolean))];
++
++        // Pre-check uniqueness de username (anti P0: colision)
++        if (usernameChanged) {
++          try {
++            const existing = await this.grafanaService.lookupUserByLogin(c.grafanaUsuario as string);
++            if (existing && !userIds.includes(existing.id)) {
++              throw new BadRequestException(
++                `El username '${c.grafanaUsuario}' ya existe en Grafana (id=${existing.id}). Elige otro.`,
++              );
++            }
++          } catch (e: any) {
++            if (e instanceof BadRequestException) throw e;
++            warnings.push(`No pude verificar uniqueness de username: ${e?.message}`);
++          }
++        }
++
++        // CRITICAL: password + username — si fallan, ABORT antes de tocar BD.
++        for (const uid of userIds) {
++          if (passwordChanged) {
++            try {
++              await this.grafanaService.updateUserPassword(uid, String(grafanaPassword));
++            } catch (e: any) {
++              throw new BadRequestException(
++                `Error al cambiar password en Grafana (user ${uid}): ${e?.response?.data?.message || e?.message}`,
++              );
++            }
++          }
++          if (usernameChanged) {
++            try {
++              await this.grafanaService.updateUserLogin(uid, c.grafanaUsuario as string);
++            } catch (e: any) {
++              throw new BadRequestException(
++                `Error al cambiar username en Grafana (user ${uid}): ${e?.response?.data?.message || e?.message}`,
++              );
++            }
++          }
++        }
++
++        // BEST-EFFORT: org rename (cosmetico, no rompe el login)
++        if (orgNameChanged) {
++          // Computar slug minusculo del nuevo nombre para el ds DENTRO de la org del cliente
++          // (sigue la convencion del provisioning: el ds local usa slug, el de MAAT usa orgName).
++          const slug = newOrgName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '').slice(0, 40) || 'cliente';
++          for (const t of tokensWithGrafana) {
++            const orgId = t.grafanaOrgId as number;
++            const dsUrl = t.ip ? `http://${t.ip}:9090` : null;
++            // 1) Renombrar la Org
++            try {
++              await this.grafanaService.renameOrg(orgId, newOrgName);
++            } catch (e: any) {
++              warnings.push(`Org ${orgId} no renombrada: ${e?.response?.data?.message || e?.message}`);
++              continue;
++            }
++            // 2) Renombrar el datasource dentro de la org del cliente (matching por URL)
++            if (dsUrl) {
++              const okClient = await this.grafanaService.renameDatasourceByUrl(orgId, dsUrl, slug);
++              if (!okClient) warnings.push(`Datasource en org ${orgId} no renombrado`);
++              // 3) Renombrar el datasource ESPEJO en MAAT (org 1) — es el que aparece
++              //    en el dropdown del dashboard "MAAT · MONITOREO CLIENTES".
++              const okMaat = await this.grafanaService.renameDatasourceByUrl(1, dsUrl, newOrgName);
++              if (!okMaat) warnings.push(`Datasource en MAAT no renombrado (${dsUrl})`);
++            }
++          }
++        }
++
++        // Sincronizar las columnas espejo en token tambien.
++        if (usernameChanged || passwordChanged) {
++          const updates: any = {};
++          if (usernameChanged) updates.grafanaUsername = c.grafanaUsuario;
++          if (passwordChanged) updates.grafanaPassword = c.grafanaPassword;
++          for (const t of tokensWithGrafana) {
++            await this.tokenRepo.update(t.id, updates);
++          }
++        }
++      }
++    }
++
+     const saved = await this.repo.save(c);
+-    return this.mask(saved);
++    const result: any = this.mask(saved);
++    if (warnings.length) result.grafanaWarnings = warnings;
++    return result;
+   }
+ 
+   async getGrafanaCredentials(id: string) {
+@@ -210,6 +374,106 @@ export class ClientesService {
+     };
+   }
+ 
++  /**
++   * Provisiona Grafana para cada token del cliente que aun no tenga grafanaOrgId.
++   * Util para clientes legacy donde el onboarding fallo en stage grafana
++   * (ej. credenciales centinela-bot invalidas) — en vez de borrar+recrear el
++   * cliente, se llama este endpoint y se reintenta solo el provisioning.
++   *
++   * Devuelve por cada token: { tokenId, nombreToken, success, message, orgId?, username? }.
++   * No tira excepcion si UNO falla — best-effort, sigue con el siguiente.
++   */
++  async provisionGrafana(clienteId: string) {
++    const { cliente, tokens } = await this.getServiciosTokensRaw(clienteId);
++    const pending = tokens.filter((t) => !t.grafanaOrgId);
++    if (!pending.length) {
++      return {
++        cliente: { id: cliente.id, nombre: cliente.nombre, apellido: cliente.apellido },
++        results: tokens.map((t) => ({
++          tokenId: t.id,
++          nombreToken: t.nombreToken,
++          success: true,
++          message: 'Ya provisionado',
++          orgId: t.grafanaOrgId,
++          username: (t as any).grafanaUsername,
++        })),
++      };
++    }
++
++    const cfg = await this.grafanaConfigService.getResolved();
++    if (!cfg) {
++      throw new BadRequestException('Grafana no esta configurado (Administracion -> Grafana)');
++    }
++    const baseUrl = cfg.publicUrl || cfg.url || '';
++
++    // Helper inline: mismo algoritmo que onboarding para consistencia.
++    const norm = (s?: string) =>
++      (s || '').toString().normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
++    const buildUsername = (nombre?: string, apellido?: string, cedula?: string) => {
++      const initial = norm(nombre).trim()[0] || '';
++      const last = norm(apellido).replace(/\s+/g, '').replace(/[^a-z0-9_.-]/g, '');
++      const u = (initial + last).slice(0, 64);
++      if (u && u.length >= 3) return u;
++      return cedula ? `cli_${cedula}` : `cli_${Date.now()}`;
++    };
++
++    const username = buildUsername(cliente.nombre, cliente.apellido, cliente.cedula);
++    const results: any[] = [];
++
++    for (const t of pending) {
++      try {
++        const prometheusUrl = t.ip ? `http://${t.ip}:9090` : null;
++        const userEmail = cliente.correo || `${cliente.cedula}@centinela.local`;
++        const clientName = (cliente.empresa && cliente.empresa.trim()) ? cliente.empresa.trim() : `${cliente.nombre} ${cliente.apellido}`.trim();
++        const res = await this.grafanaService.provisionForToken({
++          nombreToken: clientName,
++          prometheusUrl,
++          emailCliente: userEmail,
++          username,
++        });
++        await this.tokenRepo.update(t.id, {
++          grafanaOrgId: res.orgId,
++          grafanaUserId: res.userId,
++          grafanaUsername: res.username,
++          grafanaPassword: encryptSecret(res.password),
++          grafanaDashboardUid: res.dashboardUid || null,
++        });
++        // Cliente: SIEMPRE sincronizar las credenciales al ultimo provisioning
++        // exitoso. El user "fheredia" en Grafana fue creado con la password
++        // que devolvio provisionForToken — esa es la unica valida; cualquier
++        // password vieja en cliente.grafanaPassword (del onboarding fallido
++        // que generaba random sin tocar Grafana) queda invalida. Sin esto, el
++        // boton "Ver credenciales" muestra una password que Grafana rechaza.
++        cliente.grafanaUsuario = res.username;
++        cliente.grafanaPassword = encryptSecret(res.password);
++        cliente.grafanaUrl = baseUrl || res.loginUrl || null;
++        cliente.grafanaActivo = true;
++        await this.repo.save(cliente);
++        results.push({
++          tokenId: t.id,
++          nombreToken: t.nombreToken,
++          success: true,
++          message: 'Provisionado correctamente',
++          orgId: res.orgId,
++          username: res.username,
++          dashboardUrl: res.dashboardUrl,
++        });
++      } catch (e: any) {
++        results.push({
++          tokenId: t.id,
++          nombreToken: t.nombreToken,
++          success: false,
++          message: e?.message || 'Error desconocido',
++        });
++      }
++    }
++
++    return {
++      cliente: { id: cliente.id, nombre: cliente.nombre, apellido: cliente.apellido },
++      results,
++    };
++  }
++
+   async remove(id: string) {
+     const c = await this.repo.findOne({ where: { id } });
+     if (!c) throw new NotFoundException('Cliente no encontrado');
+diff --git a/CentinelaBack/src/grafana/grafana-config.controller.ts b/CentinelaBack/src/grafana/grafana-config.controller.ts
+index 15e9192..6dee581 100644
+--- a/CentinelaBack/src/grafana/grafana-config.controller.ts
++++ b/CentinelaBack/src/grafana/grafana-config.controller.ts
+@@ -10,6 +10,16 @@ import { SaveGrafanaConfigDto } from './dto/grafana-config.dto'
+ export class GrafanaConfigController {
+   constructor(private readonly service: GrafanaConfigService) {}
+ 
++  // URL publica de Grafana — usado por el form de Clientes para auto-rellenar
++  // el campo "URL Grafana del cliente" (mismo para todos). Permiso 'index.clientes'
++  // porque cualquier admin que puede ver clientes ya tiene derecho a esta URL.
++  @Auth('index.clientes')
++  @Get('public-url')
++  async getPublicUrl() {
++    const cfg = await this.service.getResolved()
++    return { url: cfg?.publicUrl || cfg?.url || null }
++  }
++
+   @Auth('index.grafana')
+   @Get()
+   async get() {
+diff --git a/CentinelaBack/src/grafana/grafana.service.ts b/CentinelaBack/src/grafana/grafana.service.ts
+index 87fbf21..312e282 100644
+--- a/CentinelaBack/src/grafana/grafana.service.ts
++++ b/CentinelaBack/src/grafana/grafana.service.ts
+@@ -23,6 +23,7 @@ export interface ProvisionInput {
+   nombreToken: string       // "VELINET"
+   prometheusUrl?: string | null // ej: "http://1.2.3.4:9090"
+   emailCliente?: string | null
++  username?: string | null  // Si viene, se usa tal cual; si no, genera ${slug}-viewer
+ }
+ 
+ @Injectable()
+@@ -79,7 +80,9 @@ export class GrafanaService {
+     }
+ 
+     // 3. USER GLOBAL (Grafana admin API: /api/admin/users)
+-    const username = `${slug}-viewer`
++    // Username preferentemente del caller (inicial+apellido del cliente). Fallback
++    // al slug + "-viewer" — mantiene back-compat con instalaciones existentes.
++    const username = (input.username && input.username.trim()) ? input.username.trim() : `${slug}-viewer`
+     const password = this.generatePassword()
+     const userEmail = input.emailCliente || `${slug}@centinela.local`
+     const userId = await this.createGlobalUser(cfg, {
+@@ -100,6 +103,55 @@ export class GrafanaService {
+       this.logger.warn(`No pude quitar user ${userId} de org 1: ${e?.message}`)
+     }
+ 
++    // 5.5. Propagar miembros de MAAT (org 1) al nuevo client org como Admin.
++    // Asi cualquier admin que tengas en MAAT ve y administra todos los client
++    // orgs desde su user. centinela-bot se excluye: ya tiene Grafana Server
++    // Admin, no necesita ser miembro explicito. El user nuevo (fheredia) tampoco
++    // se re-agrega: ya quedo como Viewer en el paso 4.
++    try {
++      const { data: maatUsers } = await this.http(cfg).get('/api/orgs/1/users')
++      for (const mu of (maatUsers || [])) {
++        if (mu.userId === userId) continue
++        if (mu.login === 'centinela-bot') continue
++        try {
++          await this.addUserToOrg(cfg, orgId, mu.email || mu.login, 'Admin')
++          this.logger.log(`Propagado admin MAAT '${mu.login}' a org ${orgId}`)
++        } catch (e: any) {
++          // idempotente: si el user ya estaba, no nos importa
++          if (!/already/i.test(e?.message || '')) {
++            this.logger.warn(`No pude agregar '${mu.login}' a org ${orgId}: ${e?.message}`)
++          }
++        }
++      }
++    } catch (e: any) {
++      this.logger.warn(`No pude propagar admins de MAAT a org ${orgId}: ${e?.message}`)
++    }
++
++    // 5.7. Replicar el datasource Prometheus del cliente DENTRO de MAAT (org 1).
++    // Por que: MAAT tiene un dashboard "MAAT · SERVIDOR · MONITOREO CLIENTES"
++    // con una variable templating `${DS_PROMETHEUS}` tipo `datasource query=prometheus`.
++    // Eso significa que cualquier datasource Prometheus que exista EN MAAT aparece
++    // automaticamente como opcion en el dropdown del dashboard. Asi, agregando solo
++    // el datasource (sin importar dashboard nuevo) el cliente se vuelve seleccionable
++    // desde MAAT sin duplicar dashboards.
++    //
++    // Idempotente: createPrometheusDatasource ya maneja "already exists" (busca por
++    // nombre y retorna el uid existente). El bloque va en try/catch propio para
++    // que un fallo aqui NO rompa el provisioning del cliente.
++    if (input.prometheusUrl) {
++      try {
++        await this.switchOrg(cfg, 1) // MAAT
++        const maatDsUid = await this.createPrometheusDatasource(cfg, orgName, input.prometheusUrl)
++        this.logger.log(`Datasource '${orgName}' replicado en MAAT (uid=${maatDsUid})`)
++        // Volver a la org del cliente para los pasos 6+ (dashboard).
++        await this.switchOrg(cfg, orgId)
++      } catch (e: any) {
++        this.logger.warn(`No replique datasource a MAAT para ${orgName}: ${e?.message}`)
++        // Aseguramos volver a la org del cliente aunque haya fallado el switch a MAAT.
++        try { await this.switchOrg(cfg, orgId) } catch { /* ignore */ }
++      }
++    }
++
+     // 6. DASHBOARD (si hay data source)
+     let dashboardUid: string | null = null
+     let dashboardUrl: string | null = null
+@@ -115,6 +167,18 @@ export class GrafanaService {
+         dashboardUid = uid
+         dashboardUrl = `${cfg.publicUrl}${url}`
+         this.logger.log(`Dashboard importado: ${dashboardUrl}`)
++
++        // 6.5. Set como Home Dashboard de la org. Asi el cliente (y los admins
++        // de MAAT que ven la org) entran directo al dashboard sin tener que
++        // navegar. Requiere estar EN la org target (ya lo estamos por el
++        // switchOrg() del paso 6).
++        try {
++          await this.http(cfg).put('/api/org/preferences', { homeDashboardUID: uid })
++          this.logger.log(`Home dashboard seteado para org ${orgId}: ${uid}`)
++        } catch (e: any) {
++          // No abortamos si falla — el dashboard ya quedo creado, solo es UX.
++          this.logger.warn(`No pude setear home dashboard para org ${orgId}: ${e?.response?.data?.message || e?.message}`)
++        }
+       } catch (e: any) {
+         // No abortamos el provisioning si falla el dashboard
+         this.logger.warn(`Dashboard no importado: ${e?.message}`)
+@@ -173,6 +237,95 @@ export class GrafanaService {
+     return { username: user.login, password }
+   }
+ 
++  /**
++   * Setea una password explicita en Grafana para un user. Usado por la
++   * propagacion de cambios desde el form de edicion de cliente.
++   * Throws si Grafana rechaza (policy violation, user inexistente, etc.).
++   */
++  async updateUserPassword(grafanaUserId: number, newPassword: string): Promise<void> {
++    const cfg = await this.configService.getResolved()
++    if (!cfg) throw new Error('Grafana no configurado')
++    await this.http(cfg).put(`/api/admin/users/${grafanaUserId}/password`, { password: newPassword })
++    this.logger.log(`Password actualizado para user Grafana ${grafanaUserId}`)
++  }
++
++  /**
++   * Cambia el login (username) de un user. Grafana exige email+name en el body
++   * para evitar nulificarlos accidentalmente, asi que los leemos antes.
++   */
++  async updateUserLogin(grafanaUserId: number, newLogin: string): Promise<void> {
++    const cfg = await this.configService.getResolved()
++    if (!cfg) throw new Error('Grafana no configurado')
++    const http = this.http(cfg)
++    const { data: user } = await http.get(`/api/users/${grafanaUserId}`)
++    await http.put(`/api/users/${grafanaUserId}`, {
++      login: newLogin,
++      email: user.email,
++      name: user.name,
++    })
++    this.logger.log(`Login actualizado a '${newLogin}' para user Grafana ${grafanaUserId}`)
++  }
++
++  /** Renombra una Org (cosmetico — no afecta UIDs ni dashboards) */
++  async renameOrg(orgId: number, newName: string): Promise<void> {
++    const cfg = await this.configService.getResolved()
++    if (!cfg) throw new Error('Grafana no configurado')
++    await this.http(cfg).put(`/api/orgs/${orgId}`, { name: newName })
++    this.logger.log(`Org ${orgId} renombrada a '${newName}'`)
++  }
++
++  /**
++   * Renombra el datasource que apunta a una URL especifica dentro de una org.
++   * Usado cuando se renombra la empresa del cliente: ademas de la Org, hay que
++   * renombrar el datasource en su propia org Y el datasource espejo en MAAT
++   * (los dos siguen el mismo nombre que la Org).
++   *
++   * Match por URL (no por name) para identificar el ds correcto sin ambiguedad:
++   * cada cliente tiene un solo ds apuntando a `http://{ip}:9090`.
++   *
++   * No throws — log warn si falla, devuelve true/false. Es cosmetico.
++   */
++  async renameDatasourceByUrl(orgId: number, url: string, newName: string): Promise<boolean> {
++    const cfg = await this.configService.getResolved()
++    if (!cfg) return false
++    const http = this.http(cfg)
++    try {
++      // Switch a la org target — los endpoints /api/datasources son org-scoped.
++      await http.post(`/api/user/using/${orgId}`)
++      const { data: list } = await http.get('/api/datasources')
++      const ds = (list || []).find((d: any) => (d.url || '') === url)
++      if (!ds) {
++        this.logger.warn(`Datasource con url '${url}' no encontrado en org ${orgId}`)
++        return false
++      }
++      // PUT requiere casi todo el body — preservamos lo existente y solo cambiamos name.
++      await http.put(`/api/datasources/uid/${ds.uid}`, {
++        ...ds,
++        name: newName,
++      })
++      this.logger.log(`Datasource ${ds.uid} en org ${orgId} renombrado a '${newName}'`)
++      return true
++    } catch (e: any) {
++      this.logger.warn(`renameDatasourceByUrl org=${orgId} url=${url}: ${e?.response?.data?.message || e?.message}`)
++      return false
++    }
++  }
++
++  /** Pre-check: existe ya un user con ese login? Devuelve {id} o null */
++  async lookupUserByLogin(login: string): Promise<{ id: number } | null> {
++    const cfg = await this.configService.getResolved()
++    if (!cfg) throw new Error('Grafana no configurado')
++    try {
++      const { data } = await this.http(cfg).get(
++        `/api/users/lookup?loginOrEmail=${encodeURIComponent(login)}`,
++      )
++      return data?.id ? { id: data.id } : null
++    } catch (e: any) {
++      if (e?.response?.status === 404) return null
++      throw e
++    }
++  }
++
+   // ==========================================================
+   // Helpers internos (una llamada = un método)
+   // ==========================================================
+diff --git a/CentinelaBack/src/tokens/dto/rotate-token.dto.ts b/CentinelaBack/src/tokens/dto/rotate-token.dto.ts
+new file mode 100644
+index 0000000..571a374
+--- /dev/null
++++ b/CentinelaBack/src/tokens/dto/rotate-token.dto.ts
+@@ -0,0 +1,19 @@
++import { IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
++
++/**
++ * DTO para rotacion del API token de Technitium asociado a un Token de Centinela.
++ *
++ * Solo permite cambiar el campo `token`. ip/puerto/nombre se mantienen porque
++ * cambiar la IP/puerto seria DNS-takeover (atacante apunta a su propio DNS y
++ * captura el token nuevo). Para cambiar IP hay que delete + recreate.
++ *
++ * El servicio (rotateToken) valida el nuevo token llamando testConnection
++ * contra la IP/puerto YA almacenada en BD ANTES de persistir el cambio.
++ */
++export class RotateTokenDto {
++  @IsString()
++  @IsNotEmpty()
++  @MinLength(8)
++  @MaxLength(512)
++  token!: string;
++}
+diff --git a/CentinelaBack/src/tokens/tokens.controller.ts b/CentinelaBack/src/tokens/tokens.controller.ts
+index aac720e..38201da 100644
+--- a/CentinelaBack/src/tokens/tokens.controller.ts
++++ b/CentinelaBack/src/tokens/tokens.controller.ts
+@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Put } from '@
+ import { TokensService } from './tokens.service';
+ import { CreateTokenDto } from './dto/create-token.dto';
+ import { UpdateTokenDto } from './dto/update-token.dto';
++import { RotateTokenDto } from './dto/rotate-token.dto';
+ import { FilterTokenDto } from './dto/filter-token.dto';
+ import { AssignBlocklistsDto } from './dto/assign-blocklists.dto';
+ import { Auth } from 'src/auth/decorators/auth.decorator';
+@@ -49,6 +50,21 @@ export class TokensController {
+     return this.tokensService.toggleActive(id, isActive);
+   }
+ 
++  @Auth('editar.tokens')
++  @Patch(':id/rotate-token')
++  rotateToken(
++    @Param('id') id: string,
++    @Body() dto: RotateTokenDto,
++  ) {
++    return this.tokensService.rotateToken(id, dto.token);
++  }
++
++  @Auth('editar.tokens')
++  @Post(':id/refresh-monitoring')
++  refreshMonitoring(@Param('id') id: string) {
++    return this.tokensService.refreshMonitoring(id);
++  }
++
+   @Auth('eliminar.tokens')
+   @Delete(':id')
+   remove(@Param('id') id: string) {
+diff --git a/CentinelaBack/src/tokens/tokens.module.ts b/CentinelaBack/src/tokens/tokens.module.ts
+index 475455d..bea1d75 100644
+--- a/CentinelaBack/src/tokens/tokens.module.ts
++++ b/CentinelaBack/src/tokens/tokens.module.ts
+@@ -10,6 +10,7 @@ import { SchedulerModule } from 'src/scheduler/scheduler.module';
+ import { TechinitiumModule } from 'src/techinitium/techinitium.module';
+ import { NotificationsModule } from 'src/notifications/notifications.module';
+ import { GrafanaModule } from 'src/grafana/grafana.module';
++import { SshModule } from 'src/ssh/ssh.module';
+ 
+ @Module({
+   imports: [
+@@ -18,6 +19,7 @@ import { GrafanaModule } from 'src/grafana/grafana.module';
+     TechinitiumModule,
+     NotificationsModule,
+     GrafanaModule,
++    SshModule,
+   ],
+   controllers: [TokensController],
+   providers: [TokensService],
+diff --git a/CentinelaBack/src/tokens/tokens.service.ts b/CentinelaBack/src/tokens/tokens.service.ts
+index 9eeea6f..5a8550a 100644
+--- a/CentinelaBack/src/tokens/tokens.service.ts
++++ b/CentinelaBack/src/tokens/tokens.service.ts
+@@ -23,6 +23,7 @@ import { NotificationsService } from 'src/notifications/notifications.service';
+ import { NotificationEvent } from 'src/notifications/enum/notification-event.enum';
+ import { GrafanaService } from 'src/grafana/grafana.service';
+ import { GrafanaConfigService } from 'src/grafana/grafana-config.service';
++import { SshService } from 'src/ssh/ssh.service';
+ 
+ @Injectable()
+ export class TokensService {
+@@ -60,6 +61,7 @@ export class TokensService {
+     private readonly grafana: GrafanaService,
+ 
+     private readonly grafanaConfig: GrafanaConfigService,
++    private readonly sshService: SshService,
+   ) { }
+ 
+   // CREATE TOKEN
+@@ -267,6 +269,117 @@ export class TokensService {
+     };
+   }
+ 
++  /**
++   * Refresca la config de Prometheus en el VPS del token via SSH:
++   *  - Re-escribe /opt/centinela-monitoring/prometheus/prometheus.yml con
++   *    labels `instance=<token.ip>:9100|9105` (sino el dashboard MAAT muestra 127.0.0.1).
++   *  - Reinicia el container prometheus para que tome la config nueva.
++   *
++   * Idempotente: corre como overwrite total del yml. Si el VPS no tiene la
++   * stack de monitoreo (enableMonitoring=false original), retorna best-effort.
++   */
++  async refreshMonitoring(tokenId: string) {
++    const t = await this.tokenRepo.findOne({ where: { id: tokenId, isActive: true } });
++    if (!t) throw new NotFoundException('Token no encontrado o inactivo');
++    if (!t.ip) throw new BadRequestException('Token sin IP');
++
++    const ip = t.ip;
++    const yml = `global:
++  scrape_interval: 15s
++scrape_configs:
++  - job_name: node
++    static_configs:
++      - targets: ['127.0.0.1:9100']
++        labels:
++          instance: '${ip}:9100'
++  - job_name: technitium-dns
++    static_configs:
++      - targets: ['127.0.0.1:9105']
++        labels:
++          instance: '${ip}:9105'
++`;
++    const remotePath = '/opt/centinela-monitoring/prometheus/prometheus.yml';
++
++    try {
++      await this.sshService.putFile(t.id, yml, remotePath);
++    } catch (e: any) {
++      return {
++        success: false,
++        message: `No pude escribir prometheus.yml: ${e?.message || 'error SSH'}`,
++      };
++    }
++
++    // Verificar y reiniciar el container prometheus. Usamos docker compose en
++    // el dir esperado por el install.sh. Si no existe el compose (cliente sin
++    // monitoring), el comando falla pero ya quedo el yml.
++    const restart = await this.sshService.execute(
++      t.id,
++      'cd /opt/centinela-monitoring && docker compose restart prometheus 2>&1 | tail -20',
++    );
++
++    const ok = restart.code === 0;
++    return {
++      success: ok,
++      message: ok
++        ? `Monitoreo sincronizado en ${ip}. Prometheus reiniciado.`
++        : `prometheus.yml actualizado pero el restart fallo: ${restart.stderr || restart.stdout || 'sin output'}`,
++      ip,
++      restartCode: restart.code,
++      restartLog: ((restart.stdout || '') + (restart.stderr || '')).slice(-500),
++    };
++  }
++
++  // ROTAR API TOKEN DE TECHNITIUM
++  // Endpoint separado del update() porque el PATCH general omite el campo
++  // `token` como defensa anti-DNS-takeover. La rotacion legitima del API token
++  // (cuando el operador lo regenera en Technitium) pasa por aca, validando
++  // PRIMERO contra el Technitium real (con ip/puerto en BD, NO suministrados
++  // por el cliente) y solo persistiendo si el token nuevo responde ok.
++  async rotateToken(id: string, newToken: string) {
++    const token = await this.tokenRepo.findOne({ where: { id } });
++    if (!token) throw new NotFoundException('Token no existe');
++    if (!token.isActive) {
++      throw new BadRequestException('No se puede rotar un token desactivado');
++    }
++
++    const cleanToken = (newToken || '').trim();
++    if (!cleanToken) throw new BadRequestException('Token vacio');
++
++    // Defensa anti-replay: si el operador pega el mismo token revocado, no
++    // rebajamos a un test innecesario contra Technitium ni rompemos su limit.
++    let currentPlain: string | null = null;
++    try {
++      currentPlain = decryptSecret(token.token);
++    } catch {
++      currentPlain = null;
++    }
++    if (currentPlain && currentPlain === cleanToken) {
++      throw new BadRequestException('El token nuevo es igual al actual');
++    }
++
++    // Validacion obligatoria contra Technitium ANTES de persistir. Usamos
++    // ip/puerto YA almacenados en BD (no del request) — el cliente solo
++    // suministra el token nuevo, todo lo demas viene de la fila autoritativa.
++    const probe = await this.technitiumService.testConnection({
++      ip: token.ip,
++      puerto: token.puerto,
++      token: cleanToken,
++    });
++    if (!probe?.success) {
++      throw new BadRequestException(
++        probe?.message || 'El token nuevo no es valido en Technitium',
++      );
++    }
++
++    token.token = encryptSecret(cleanToken);
++    await this.tokenRepo.save(token);
++
++    return {
++      message: 'Token rotado correctamente',
++      data: this.revealToken(token),
++    };
++  }
++
+   // ACTIVAR / DESACTIVAR TOKEN
+   async toggleActive(id: string, cond: boolean) {
+     const token = await this.tokenRepo.findOne({ where: { id } });
+diff --git a/CentinelaBack/src/vps-provisioning/install-script.ts b/CentinelaBack/src/vps-provisioning/install-script.ts
+index c7a621d..e6fc534 100644
+--- a/CentinelaBack/src/vps-provisioning/install-script.ts
++++ b/CentinelaBack/src/vps-provisioning/install-script.ts
+@@ -512,16 +512,31 @@ deploy_stack() {
+   log "Desplegando stack de monitoreo"
+   local dir=/opt/centinela-monitoring
+   mkdir -p "$dir/prometheus"
+-  cat > "$dir/prometheus/prometheus.yml" <<'EOF'
++
++  # Detectar IP publica del VPS para etiquetar las metricas en \`instance\`.
++  # Sin esto el dashboard MAAT muestra "127.0.0.1" en el panel "DIRECCION IP".
++  # Fallback chain: ifconfig.me -> ipify -> hostname -I.
++  PUBLIC_IP=\$(curl -fsS --max-time 5 https://ifconfig.me 2>/dev/null \
++            || curl -fsS --max-time 5 https://api.ipify.org 2>/dev/null \
++            || hostname -I 2>/dev/null | awk '{print \$1}' \
++            || echo "localhost")
++  log "Public IP detectada para labels Prometheus: \$PUBLIC_IP"
++
++  # Nota: heredoc SIN comillas para que \$PUBLIC_IP se interpole.
++  cat > "\$dir/prometheus/prometheus.yml" <<EOF
+ global:
+   scrape_interval: 15s
+ scrape_configs:
+   - job_name: node
+     static_configs:
+       - targets: ['127.0.0.1:9100']
++        labels:
++          instance: '\${PUBLIC_IP}:9100'
+   - job_name: technitium-dns
+     static_configs:
+       - targets: ['127.0.0.1:9105']
++        labels:
++          instance: '\${PUBLIC_IP}:9105'
+ EOF
+ 
+   # Token dedicado para el exporter (creado por provision_technitium)
+diff --git a/CentinelaBack/src/vps-provisioning/vps-provisioning.service.ts b/CentinelaBack/src/vps-provisioning/vps-provisioning.service.ts
+index 3572a27..e0d4d21 100644
+--- a/CentinelaBack/src/vps-provisioning/vps-provisioning.service.ts
++++ b/CentinelaBack/src/vps-provisioning/vps-provisioning.service.ts
+@@ -7,7 +7,7 @@ import {
+ import { InjectRepository } from '@nestjs/typeorm';
+ import { Repository } from 'typeorm';
+ import { NodeSSH } from 'node-ssh';
+-import { Observable, Subject, ReplaySubject } from 'rxjs';
++import { Observable, Subject, ReplaySubject, interval, Subscription } from 'rxjs';
+ 
+ import { VpsDeployment } from './entities/vps-deployment.entity';
+ import { Token } from '../tokens/entities/token.entity';
+@@ -332,7 +332,13 @@ export class VpsProvisioningService {
+           complete: () => subscriber.complete(),
+           error: (e) => subscriber.error(e),
+         });
+-        unsub = () => sub.unsubscribe();
++        // Heartbeat: SSE comment cada 15s. Imprescindible cuando el install
++        // remoto pasa minutos sin imprimir nada — sin esto EventSource cierra
++        // con onerror y el front queda en "Stream cerrado: Error in input stream".
++        const heartbeatSub: Subscription = interval(15_000).subscribe(() => {
++          subscriber.next({ data: ':ka' });
++        });
++        unsub = () => { sub.unsubscribe(); heartbeatSub.unsubscribe(); };
+       } else {
+         // Sin stream vivo — leer log de BD, emitir y cerrar
+         this.repo
+diff --git a/CentinelaFrom/src/pages/administration/clientes/IndexPage.vue b/CentinelaFrom/src/pages/administration/clientes/IndexPage.vue
+index 69b1dd7..cbe3b46 100644
+--- a/CentinelaFrom/src/pages/administration/clientes/IndexPage.vue
++++ b/CentinelaFrom/src/pages/administration/clientes/IndexPage.vue
+@@ -214,8 +214,46 @@
+       </q-card>
+     </q-dialog>
+ 
+-    <q-dialog v-model="formOpen" persistent @hide="onFormHide">
+-      <q-card class="cli-modal" style="width: 720px; max-width: 92vw">
++    <q-dialog
++      v-model="formOpen"
++      :seamless="deployFloating"
++      :persistent="!deployFloating"
++      :position="deployFloating ? 'bottom' : 'standard'"
++      @hide="onFormHide"
++    >
++      <!-- Mini widget flotante: visible solo mientras el deploy esta corriendo
++           o tras completar, hasta que el usuario lo cierre. La app de fondo
++           queda usable porque q-dialog en :seamless no bloquea clicks. -->
++      <q-card v-if="deployFloating" class="cli-modal--floating" style="width: 380px; max-width: 92vw">
++        <div class="row items-center q-px-md q-py-sm" style="background: linear-gradient(90deg,#6366F1,#8b5cf6); color:white;">
++          <q-icon :name="!deployBusy && deployPercent === 100 ? 'check_circle' : 'rocket_launch'" size="20px" class="q-mr-sm" />
++          <div class="col text-weight-medium ellipsis">
++            {{ form.nombre ? (form.nombre + (form.apellido ? ' ' + form.apellido : '')) : 'Nuevo cliente' }}
++          </div>
++          <q-btn flat dense round size="sm" icon="open_in_full" color="white" @click="deployFloating = false">
++            <q-tooltip>Expandir</q-tooltip>
++          </q-btn>
++          <q-btn flat dense round size="sm" icon="close" color="white" :disable="deployBusy" @click="cerrarFlotante">
++            <q-tooltip>{{ deployBusy ? 'En curso… no se puede cerrar' : 'Cerrar' }}</q-tooltip>
++          </q-btn>
++        </div>
++        <div class="q-pa-md">
++          <div class="row items-center q-mb-xs">
++            <q-spinner v-if="deployBusy" color="purple-7" size="18px" class="q-mr-sm" />
++            <q-icon v-else-if="deployPercent === 100" name="check_circle" color="green-7" size="18px" class="q-mr-sm" />
++            <q-icon v-else name="error_outline" color="orange-8" size="18px" class="q-mr-sm" />
++            <div class="col text-caption text-grey-8 ellipsis">{{ deployProgress || 'Iniciando…' }}</div>
++            <div class="text-weight-bold" :class="deployPercent === 100 ? 'text-green-7' : 'text-purple-8'">{{ deployPercent }}%</div>
++          </div>
++          <q-linear-progress
++            :value="deployPercent / 100"
++            :color="deployPercent === 100 ? 'green-7' : 'purple-7'"
++            rounded
++            size="6px"
++          />
++        </div>
++      </q-card>
++      <q-card v-show="!deployFloating" class="cli-modal" style="width: 720px; max-width: 92vw">
+         <div class="modal-hero">
+           <div class="modal-hero-bg"></div>
+           <div class="modal-hero-content row items-center no-wrap">
+@@ -261,8 +299,25 @@
+               <q-select class="col-12 col-sm-6" v-model="form.tipoDocumento" :options="tipoDocumentoOptions" outlined dense label="Tipo de Documento" emit-value map-options>
+                 <template v-slot:prepend><q-icon name="badge" /></template>
+               </q-select>
+-              <q-input class="col-12 col-sm-6" v-model="form.cedula" outlined dense :label="cedulaLabel + ' *'" :error="!!errors.cedula" :error-message="errors.cedula">
++              <q-input
++                class="col-12 col-sm-6"
++                v-model="form.cedula"
++                outlined
++                dense
++                :label="cedulaLabel + ' *'"
++                :error="!!errors.cedula"
++                :error-message="errors.cedula"
++              >
+                 <template v-slot:prepend><q-icon name="fingerprint" /></template>
++                <template v-slot:append>
++                  <q-spinner v-if="cedulaCheckLoading" color="grey-7" size="18px" />
++                  <q-icon v-else-if="cedulaTaken" name="error" color="red-6" size="20px">
++                    <q-tooltip>Ya registrada</q-tooltip>
++                  </q-icon>
++                  <q-icon v-else-if="cedulaAvailable" name="check_circle" color="green-7" size="20px">
++                    <q-tooltip>Disponible</q-tooltip>
++                  </q-icon>
++                </template>
+               </q-input>
+               <q-input class="col-12 col-sm-6" v-model="form.empresa" outlined dense label="Empresa">
+                 <template v-slot:prepend><q-icon name="business" /></template>
+@@ -321,6 +376,23 @@
+               <template v-slot:avatar><q-icon name="info" /></template>
+               Activa el toggle para configurar las credenciales de acceso del cliente.
+             </q-banner>
++
++            <!-- Boton "Provisionar Grafana" — visible solo en edicion, llama al
++                 endpoint backend que itera los tokens del cliente y crea Org +
++                 datasource + user + dashboard para los que aun no estan. -->
++            <div v-if="editing" class="q-mt-md row items-center q-gutter-sm">
++              <q-btn
++                outline
++                color="orange-7"
++                icon="auto_fix_high"
++                label="Provisionar/Repetir Grafana"
++                :loading="provisioningGrafana"
++                @click="provisionarGrafanaCliente"
++              />
++              <div class="text-caption text-grey-7">
++                Crea Org + Dashboard + User en Grafana para los servidores que aun no esten provisionados.
++              </div>
++            </div>
+           </q-tab-panel>
+           <q-tab-panel v-if="!editing && !linkMode" name="servidor" class="q-pa-md">
+             <q-banner rounded dense class="bg-blue-1 text-blue-9 q-mb-md">
+@@ -466,6 +538,16 @@
+ </template>
+ 
+ <style scoped>
++.cli-modal--floating {
++  position: fixed;
++  bottom: 24px;
++  right: 24px;
++  margin: 0 !important;
++  box-shadow: 0 12px 32px rgba(0,0,0,0.25) !important;
++  border-radius: 12px !important;
++  overflow: hidden;
++}
++
+ .mode-tile { transition: all 0.2s; border: 2px solid transparent; }
+ .mode-tile:hover { transform: translateY(-2px); border-color: #6366f1; box-shadow: 0 8px 16px rgba(0,0,0,0.08); }
+ .ssh-log {
+@@ -511,6 +593,7 @@ const filterActive = ref(null)
+ const serviciosPanelRef = ref(null)
+ const onFormHide = () => {
+   if (serviciosPanelRef.value?.clearPending) serviciosPanelRef.value.clearPending()
++  deployFloating.value = false
+   load()
+ }
+ const formOpen = ref(false)
+@@ -578,6 +661,22 @@ const sshAuthOptions = [
+ const sshTesting = ref(false)
+ const sshTestResult = ref(null)
+ const deployBusy = ref(false)
++// Floating mode: cuando el pipeline arranca, el modal grande se colapsa a un
++// mini widget en la esquina inferior para que el operador pueda seguir usando
++// la app mientras espera los ~3 min del deploy.
++const deployFloating = ref(false)
++const cerrarFlotante = () => {
++  if (deployBusy.value) return
++  deployFloating.value = false
++  formOpen.value = false
++  // limpiar progreso al cerrar manualmente para que la proxima sesion arranque limpio
++  deployProgress.value = ''
++  deployLog.value = ''
++}
++// Watch puesto aqui (no antes) porque deployBusy y deployFloating se
++// declaran arriba — la TDZ de const tumba todo el script setup si lo movemos
++// mas arriba (la pagina entera se queda en blanco).
++watch(deployBusy, (busy) => { if (busy) deployFloating.value = true })
+ const deployProgress = ref('')
+ const deployLog = ref('')
+ const deployStages = [
+@@ -671,6 +770,60 @@ const testSshConnection = async () => {
+   }
+ }
+ const editing = ref(null)
++// URL publica Grafana — la cargamos una vez al montar y la usamos para
++// auto-rellenar el campo "URL Grafana del cliente" en el form. Es la misma
++// para todos los clientes (entran al login normal y el user determina su org).
++const grafanaPublicUrl = ref('')
++const provisioningGrafana = ref(false)
++const provisionarGrafanaCliente = async () => {
++  if (!editing.value?.id) return
++  provisioningGrafana.value = true
++  try {
++    const { data } = await api.post(`/clientes/${editing.value.id}/grafana/provision`)
++    const results = data?.results || []
++    const fallos = results.filter((r) => !r.success)
++    const exitos = results.filter((r) => r.success && r.message !== 'Ya provisionado')
++    if (fallos.length === 0 && exitos.length === 0) {
++      Notify.create({ type: 'info', message: 'Todos los servidores ya tenian Grafana provisionado' })
++    } else if (fallos.length === 0) {
++      Notify.create({ type: 'positive', message: `Grafana provisionado: ${exitos.length} servidor(es)` })
++    } else {
++      const detalle = fallos.map((f) => `${f.nombreToken}: ${f.message}`).join(' | ')
++      Notify.create({ type: 'warning', message: `Provisioning con errores: ${detalle}`, timeout: 8000 })
++    }
++    // Refresh: recargar credenciales/URL desde backend
++    if (exitos.length) {
++      const fresh = await api.get(`/clientes/${editing.value.id}`).then((r) => r.data?.data || r.data).catch(() => null)
++      if (fresh) {
++        form.grafanaUsuario = fresh.grafanaUsuario || form.grafanaUsuario
++        form.grafanaUrl = fresh.grafanaUrl || form.grafanaUrl
++        form.grafanaActivo = !!fresh.grafanaActivo
++      }
++    }
++  } catch (e) {
++    Notify.create({ type: 'negative', message: 'Error al provisionar: ' + (e?.response?.data?.message || e.message), timeout: 6000 })
++  } finally {
++    provisioningGrafana.value = false
++  }
++}
++const cargarGrafanaPublicUrl = async () => {
++  try {
++    const { data } = await api.get('/grafana/config/public-url')
++    if (data?.url) grafanaPublicUrl.value = data.url
++  } catch { /* silencio: si Grafana no esta configurado, el form queda vacio */ }
++}
++
++
++// ===== Validacion en vivo de cedula =====
++// Disparamos un GET /clientes/check-cedula con debounce 400ms cuando el usuario
++// teclea. Asi el form falla rapido en vez de fallar dentro del pipeline
++// onboarding (que ya consumio recursos del servidor) con el mensaje
++// "Ya existe un cliente con esa cedula" a 3 minutos del flujo.
++const cedulaCheckLoading = ref(false)
++const cedulaTaken = ref(null)       // { id, nombre, apellido } | null
++const cedulaAvailable = ref(false)
++let _cedulaTimer = null
++let _cedulaSeq = 0                  // anti-race entre requests
+ const showPwd = ref(false)
+ const credsOpen = ref(false)
+ const creds = ref(null)
+@@ -914,7 +1067,7 @@ const openForm = async (row) => {
+   form.correo = fresh?.correo || ''
+   form.grafanaUsuario = fresh?.grafanaUsuario || ''
+   form.grafanaPassword = ''
+-  form.grafanaUrl = fresh?.grafanaUrl || ''
++  form.grafanaUrl = fresh?.grafanaUrl || grafanaPublicUrl.value || ''
+   form.grafanaActivo = !!fresh?.grafanaActivo
+   form.planId = fresh?.planId || null
+   form.diaSuspension = fresh?.diaSuspension ? String(fresh.diaSuspension).slice(0, 10) : null
+@@ -923,6 +1076,68 @@ const openForm = async (row) => {
+   formOpen.value = true
+ }
+ 
++// Helper: username Grafana = inicial(nombre)+apellido (sin acentos, espacios o
++// chars especiales). Se mantiene en sync via el watcher de abajo. El backend
++// hace exactamente la misma normalizacion en clientes.service.buildClientUsername.
++const buildGrafanaUsername = (nombre, apellido) => {
++  const norm = (s) => (s || '').toString().normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase()
++  const initial = (norm(nombre).trim()[0]) || ''
++  const last = norm(apellido).replace(/\s+/g, '').replace(/[^a-z0-9_.-]/g, '')
++  return (initial + last).slice(0, 64)
++}
++
++// Auto-fill Usuario Grafana cuando el usuario tipea nombre/apellido. Solo
++// sobreescribe si el campo esta vacio o tiene el legacy `cli_*` (asi clientes
++// con username manualmente puesto NO se pisan al editar).
++watch([() => form.nombre, () => form.apellido], () => {
++  const auto = buildGrafanaUsername(form.nombre, form.apellido)
++  if (!auto || auto.length < 3) return
++  const current = (form.grafanaUsuario || '').trim()
++  if (!current || /^cli_/.test(current)) {
++    form.grafanaUsuario = auto
++    if (errors.grafanaUsuario) errors.grafanaUsuario = ''
++  }
++})
++
++watch(() => form.cedula, (val) => {
++  if (_cedulaTimer) clearTimeout(_cedulaTimer)
++  cedulaTaken.value = null
++  cedulaAvailable.value = false
++  // Limpiamos el error solo si era de conflicto (no si era formato).
++  if (errors.cedula && /Ya registrad|registrada/i.test(errors.cedula)) errors.cedula = ''
++  const v = String(val || '').trim()
++  if (!v) return
++  // Formato minimo antes de pegarle al endpoint — evita ruido innecesario.
++  const looksValid =
++    (form.tipoDocumento === 'CEDULA' && /^[0-9]{10}$/.test(v)) ||
++    (form.tipoDocumento === 'RUC' && /^[0-9]{13}$/.test(v)) ||
++    (form.tipoDocumento === 'PASAPORTE' && /^[A-Za-z0-9]{6,20}$/.test(v))
++  if (!looksValid) return
++  _cedulaTimer = setTimeout(async () => {
++    const seq = ++_cedulaSeq
++    cedulaCheckLoading.value = true
++    try {
++      const params = { cedula: v }
++      if (editing.value?.id) params.excludeId = editing.value.id
++      const { data } = await api.get('/clientes/check-cedula', { params })
++      if (seq !== _cedulaSeq) return  // descartar respuesta vieja
++      if (data?.available) {
++        cedulaAvailable.value = true
++        cedulaTaken.value = null
++      } else if (data?.owner) {
++        cedulaTaken.value = data.owner
++        cedulaAvailable.value = false
++        errors.cedula = `Ya registrada: ${data.owner.nombre || ''} ${data.owner.apellido || ''}`.trim()
++      }
++    } catch {
++      // Silencioso — si falla la red, el chequeo de unicidad caera al backend
++      // en el create() de todos modos.
++    } finally {
++      if (seq === _cedulaSeq) cedulaCheckLoading.value = false
++    }
++  }, 400)
++})
++
+ const validate = () => {
+   Object.keys(errors).forEach((k) => errors[k] = '')
+   if (!form.nombre?.trim()) errors.nombre = 'Requerido'
+@@ -948,6 +1163,12 @@ const save = async () => {
+     else formTab.value = 'basico'
+     return
+   }
++  // Conflicto de cedula detectado en vivo — no dejamos pasar
++  if (cedulaTaken.value) {
++    errors.cedula = `Ya registrada: ${cedulaTaken.value.nombre || ''} ${cedulaTaken.value.apellido || ''}`.trim()
++    formTab.value = 'basico'
++    return
++  }
+   saving.value = true
+   try {
+     if (serviciosPanelRef.value?.commitPending) {
+@@ -970,8 +1191,18 @@ const save = async () => {
+     }
+     if (form.grafanaPassword) payload.grafanaPassword = form.grafanaPassword
+     if (editing.value) {
+-      await api.patch('/clientes/' + editing.value.id, payload)
+-      Notify.create({ type: 'positive', message: 'Cliente actualizado' })
++      const { data: updateResp } = await api.patch('/clientes/' + editing.value.id, payload)
++      // Si la propagacion a Grafana tuvo warnings (best-effort failures), los mostramos.
++      const warns = updateResp?.data?.grafanaWarnings || updateResp?.grafanaWarnings
++      if (Array.isArray(warns) && warns.length) {
++        Notify.create({
++          type: 'warning',
++          message: 'Cliente actualizado, pero Grafana reporto: ' + warns.join(' | '),
++          timeout: 9000,
++        })
++      } else {
++        Notify.create({ type: 'positive', message: 'Cliente actualizado (cambios propagados a Grafana)' })
++      }
+       formOpen.value = false
+       linkMode.value = false
+       linkTokenId.value = null
+@@ -1115,13 +1346,10 @@ const streamDeployProgress = async (id) => {
+                 deployStageStatus[_ds.key] = 'ok'
+               }
+             }
+-            deployProgress.value = 'Cliente y servidor creados correctamente'
++            // NO auto-close — el usuario necesita ver/copiar credenciales.
++            // El cierre lo hace via el boton "Cerrar" del footer adaptativo.
++            deployProgress.value = (form.nombre ? form.nombre : 'Cliente') + ' listo. Servidor en ' + (sshForm.host || '')
+             await load()
+-            setTimeout(() => {
+-              formOpen.value = false
+-              deployProgress.value = ''
+-              deployLog.value = ''
+-            }, 1500)
+           }
+           if (obj.status === 'error') {
+             deployBusy.value = false
+@@ -1195,6 +1423,7 @@ const confirmDelete = (row) => {
+ 
+ onMounted(async () => {
+   await load()
++  cargarGrafanaPublicUrl()
+ })
+ </script>
+ 
+diff --git a/CentinelaFrom/src/pages/administration/clientes/ServiciosPanel.vue b/CentinelaFrom/src/pages/administration/clientes/ServiciosPanel.vue
+index 7e9153c..9a23248 100644
+--- a/CentinelaFrom/src/pages/administration/clientes/ServiciosPanel.vue
++++ b/CentinelaFrom/src/pages/administration/clientes/ServiciosPanel.vue
+@@ -71,6 +71,7 @@
+             <q-btn dense flat round icon="open_in_new" color="indigo-7" @click="goToken(props.row)"><q-tooltip>Ir al token</q-tooltip></q-btn>
+             <q-btn v-if="props.row.grafanaUrl" dense flat round icon="bar_chart" color="orange-8" @click="openExternal(props.row.grafanaUrl)"><q-tooltip>Abrir Grafana</q-tooltip></q-btn>
+             <q-btn v-if="props.row.ip" dense flat round icon="shield" color="teal-7" @click="openTechnitium(props.row)"><q-tooltip>Panel Technitium</q-tooltip></q-btn>
++            <q-btn dense flat round icon="sync" color="purple-7" :loading="syncingMon.has(props.row.id)" @click="syncMonitoreo(props.row)"><q-tooltip>Sincronizar monitoreo (regenera prometheus.yml)</q-tooltip></q-btn>
+             <q-btn dense flat round :icon="pendingDeletes.has(props.row.id) ? 'undo' : 'delete'" :color="pendingDeletes.has(props.row.id) ? 'grey-7' : 'red-7'" @click="confirmDeleteService(props.row)"><q-tooltip>{{ pendingDeletes.has(props.row.id) ? 'Deshacer eliminacion' : 'Marcar para eliminar' }}</q-tooltip></q-btn>
+           </q-td>
+         </template>
+@@ -443,6 +444,30 @@ const setPlan = async (planId) => {
+ }
+ 
+ const goToken = (s) => router.push({ name: 'index.tokens', query: { id: s.id } })
++
++// Sincronizar monitoreo (regenera /opt/centinela-monitoring/prometheus/prometheus.yml
++// con labels `instance=<ip>:9100|9105` y reinicia el container prometheus en el VPS).
++// Util para clientes legacy donde el yml original usaba `127.0.0.1` y por eso el
++// dashboard MAAT mostraba localhost en el panel DIRECCION IP DEL SERVIDOR.
++const syncingMon = ref(new Set())
++const syncMonitoreo = async (row) => {
++  if (syncingMon.value.has(row.id)) return
++  syncingMon.value.add(row.id)
++  syncingMon.value = new Set(syncingMon.value)
++  try {
++    const { data } = await api.post(`/tokens/${row.id}/refresh-monitoring`)
++    if (data?.success) {
++      Notify.create({ type: 'positive', message: data.message || 'Monitoreo sincronizado' })
++    } else {
++      Notify.create({ type: 'warning', message: data?.message || 'Sincronizacion con errores', timeout: 8000 })
++    }
++  } catch (e) {
++    Notify.create({ type: 'negative', message: 'Error: ' + (e?.response?.data?.message || e.message), timeout: 6000 })
++  } finally {
++    syncingMon.value.delete(row.id)
++    syncingMon.value = new Set(syncingMon.value)
++  }
++}
+ const openExternal = (url) => { if (url) window.open(url, '_blank', 'noopener') }
+ const openTechnitium = (s) => {
+   if (s.ip && s.puerto) window.open('http://' + s.ip + ':' + s.puerto, '_blank', 'noopener')
+diff --git a/CentinelaFrom/src/pages/administration/tokens/IndexPage.vue b/CentinelaFrom/src/pages/administration/tokens/IndexPage.vue
+index d6b0fdf..04b960a 100644
+--- a/CentinelaFrom/src/pages/administration/tokens/IndexPage.vue
++++ b/CentinelaFrom/src/pages/administration/tokens/IndexPage.vue
+@@ -1173,6 +1173,7 @@
+ import { escapeHtml } from 'src/utils/escape'
+ import { safeUrl } from 'src/utils/url'
+ import { ref, onMounted, computed, watch, nextTick } from 'vue'
++import { useRoute, useRouter } from 'vue-router'
+ import { useTokens } from './composables/useTokens'
+ import useRolPermisos from 'src/composables/useRolPermisos'
+ import FormToken from './components/FormTokens.vue'
+@@ -1325,12 +1326,37 @@ const fetchGlobalBlocklistsState = async () => {
+   }
+ }
+ 
++// Deep-link: cuando llegamos desde otra pagina con ?id=<tokenId>, abrimos
++// directo el modal Editar de ese token. Sin esto el usuario aterrizaba en el
++// listado generico y le parecia que "lo mando al token equivocado" porque
++// solo veia el primer row de su pagina cacheada (ej: Luis Pesantes-DNS).
++const route = useRoute()
++const router = useRouter()
++const abrirDeepLinkSiCorresponde = async () => {
++  const id = route.query?.id
++  if (!id) return
++  const target = tokens.value.find((t) => t.id === id)
++  if (!target) {
++    // El id no esta en la pagina actual de la lista — el backend ya devuelve
++    // un batch grande por defecto, asi que esto rara vez pasa. Si pasa,
++    // notificamos en consola y limpiamos la query para no spam-retry.
++    console.warn('[tokens] Deep-link: token', id, 'no encontrado en la lista')
++  } else {
++    await nextTick()
++    refFormToken.value?.onEdit?.(target)
++  }
++  // Limpia la query para que un refresh no re-abra el modal.
++  router.replace({ name: route.name, query: {} }).catch(() => {})
++}
++
+ onMounted(async () => {
+   // Carga un batch grande para filtrar/paginar client-side.
+   await cargarTokens()
+   // Cargar estado de zona root en paralelo (no bloquea render)
+   fetchRootZoneStatus(tokens.value)
+   fetchGlobalBlocklistsState()
++  // Deep-link despues de cargar (necesita tokens.value populado).
++  await abrirDeepLinkSiCorresponde()
+ })
+ 
+ // Cada vez que cambia la lista de tokens (alta/baja/refresh), refrescar
+diff --git a/CentinelaFrom/src/pages/administration/tokens/components/FormTokens.vue b/CentinelaFrom/src/pages/administration/tokens/components/FormTokens.vue
+index 8161704..69c8d04 100644
+--- a/CentinelaFrom/src/pages/administration/tokens/components/FormTokens.vue
++++ b/CentinelaFrom/src/pages/administration/tokens/components/FormTokens.vue
+@@ -1,5 +1,5 @@
+ <script setup>
+-import { onMounted, watch, computed } from 'vue'
++import { onMounted, watch, computed, ref } from 'vue'
+ import { useTokens } from '../composables/useTokens'
+ 
+ const RESET_TIME_TYPE = { HORA: 'HORA', DIA: 'DIA', SEMANA: 'SEMANA', MES: 'MES' }
+@@ -22,6 +22,8 @@ const {
+   loadingRecursion,
+   recursionOptions,
+   cargarRecursion,
++  rotarToken,
++  loadingRotateToken,
+ } = useTokens()
+ 
+ const resetTypes = [
+@@ -52,11 +54,36 @@ const onCreated = () => {
+   showModalTokens.value = true
+ }
+ 
++// --- Rotacion de token (modo edicion) ---
++// mostrarRotar=false  → vista "•••• [Rotar token]" (solo lectura)
++// mostrarRotar=true   → input editable + boton "Probar y guardar" + cancelar
++const mostrarRotar = ref(false)
++const nuevoToken = ref('')
++
++const abrirRotar = () => {
++  nuevoToken.value = ''
++  mostrarRotar.value = true
++}
++const cancelarRotar = () => {
++  mostrarRotar.value = false
++  nuevoToken.value = ''
++}
++const confirmarRotar = async () => {
++  const t = (nuevoToken.value || '').trim()
++  if (!t) return
++  const res = await rotarToken(formToken.value.id, t)
++  if (res.success) {
++    cancelarRotar()
++  }
++}
++
+ const onEdit = async (detalle) => {
+   formToken.value = { ...detalle }
+   valoresOriginales.value = { ip: detalle.ip, token: detalle.token, puerto: detalle.puerto }
+   camposCriticosEditados.value = false
+   isEdit.value = true
++  mostrarRotar.value = false
++  nuevoToken.value = ''
+   showModalTokens.value = true
+   await cargarRecursion()
+ }
+@@ -174,10 +201,12 @@ defineExpose({ onCreated, onEdit })
+                 </q-input>
+               </div>
+               <div class="col-12 col-sm-7">
++                <!-- CREAR: input plano editable -->
+                 <q-input
++                  v-if="!isEdit"
+                   v-model.trim="formToken.token"
+                   outlined
+-                  :type="isEdit ? 'password' : 'text'"
++                  type="text"
+                   label="Token Technitium"
+                   hint="Token generado en el panel de Technitium DNS Server"
+                   :error="!validaciones.token.isValid"
+@@ -186,6 +215,64 @@ defineExpose({ onCreated, onEdit })
+                 >
+                   <template #prepend><q-icon name="vpn_key" /></template>
+                 </q-input>
++
++                <!-- EDITAR: token actual oculto + boton Rotar -->
++                <q-input
++                  v-else-if="!mostrarRotar"
++                  :model-value="'••••••••'"
++                  outlined
++                  readonly
++                  type="text"
++                  label="Token Technitium"
++                  hint="Por seguridad el token actual no se muestra. Usa Rotar para reemplazarlo."
++                >
++                  <template #prepend><q-icon name="vpn_key" /></template>
++                  <template #append>
++                    <q-btn
++                      flat
++                      dense
++                      color="primary"
++                      icon="sync"
++                      label="Rotar token"
++                      @click="abrirRotar"
++                    />
++                  </template>
++                </q-input>
++
++                <!-- EDITAR + rotando: input nuevo token + acciones -->
++                <div v-else>
++                  <q-input
++                    v-model.trim="nuevoToken"
++                    outlined
++                    autofocus
++                    type="text"
++                    label="Nuevo token Technitium"
++                    hint="Sera validado contra el servidor DNS antes de guardar"
++                    :disable="loadingRotateToken"
++                  >
++                    <template #prepend><q-icon name="vpn_key" /></template>
++                  </q-input>
++                  <div class="row q-mt-sm q-gutter-sm">
++                    <q-btn
++                      flat
++                      dense
++                      color="grey-7"
++                      label="Cancelar"
++                      :disable="loadingRotateToken"
++                      @click="cancelarRotar"
++                    />
++                    <q-btn
++                      unelevated
++                      dense
++                      color="primary"
++                      icon="check_circle"
++                      label="Probar y guardar"
++                      :loading="loadingRotateToken"
++                      :disable="!nuevoToken || nuevoToken.length < 8"
++                      @click="confirmarRotar"
++                    />
++                  </div>
++                </div>
+               </div>
+             </div>
+           </section>
+@@ -439,6 +526,7 @@ defineExpose({ onCreated, onEdit })
+             :label="isEdit ? 'Guardar cambios' : 'Crear token'"
+             :icon="isEdit ? 'save' : 'add_circle'"
+             :loading="loading"
++            :disable="mostrarRotar || loadingRotateToken"
+             type="submit"
+             unelevated
+             color="primary"
+diff --git a/CentinelaFrom/src/pages/administration/tokens/composables/useTokens.js b/CentinelaFrom/src/pages/administration/tokens/composables/useTokens.js
+index 71a313f..a6e5158 100644
+--- a/CentinelaFrom/src/pages/administration/tokens/composables/useTokens.js
++++ b/CentinelaFrom/src/pages/administration/tokens/composables/useTokens.js
+@@ -12,6 +12,7 @@ const loadingBlocklists = ref(false)
+ const resettingTokens = ref(new Set())
+ const isEdit = ref(false)
+ const loadingRecursion = ref(false)
++const loadingRotateToken = ref(false)
+ 
+ // BLOCKLISTS
+ const todasBlocklists = ref([])
+@@ -266,7 +267,9 @@ export const useTokens = () => {
+                 showNotification('positive', 'Token creado correctamente')
+             } else {
+                 await api.patch(`/tokens/${formToken.value.id}`, payload)
+-                await guardarRecursion()
++                if (formToken.value.recursion) {
++                    await guardarRecursion()
++                }
+                 showNotification('positive', 'Token actualizado correctamente')
+             }
+ 
+@@ -445,6 +448,25 @@ export const useTokens = () => {
+         }
+     }
+ 
++    const rotarToken = async (id, nuevoToken) => {
++        loadingRotateToken.value = true
++        try {
++            const { data } = await api.patch(`/tokens/${id}/rotate-token`, { token: nuevoToken })
++            showNotification('positive', data?.message || 'Token rotado correctamente')
++            // recargamos la recursion: con el token nuevo (valido) ya se puede
++            // leer de Technitium; sin esto, formToken.value.recursion queda
++            // vacio y el siguiente "Guardar cambios" falla con 400 set-recursion.
++            try { await cargarRecursion() } catch { /* no-op: el toast ya lo maneja */ }
++            return { success: true, data }
++        } catch (e) {
++            const msg = e?.response?.data?.message || 'No se pudo rotar el token'
++            showNotification('warning', Array.isArray(msg) ? msg.join(' | ') : msg)
++            return { success: false, message: msg }
++        } finally {
++            loadingRotateToken.value = false
++        }
++    }
++
+     const guardarRecursion = async () => {
+         try {
+             const payload = {
+@@ -489,6 +511,8 @@ export const useTokens = () => {
+         loadingRecursion,
+         recursionOptions,
+         cargarRecursion,
++        rotarToken,
++        loadingRotateToken,
+         // blocklists
+         showModalBlocklists,
+         loadingBlocklists,
+-- 
+2.39.5
+

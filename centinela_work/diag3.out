@@ -1,0 +1,1150 @@
+
+========== configure terminal ==========
+configure terminal
+gpon-olt-Estero-Medio(config)#
+
+========== show fan ==========
+show fan
+
+ Chassis Fans State Information
+ --------------------------------------------
+ current fans state: auto-running
+ current temperature:45.6 .C
+ open fan temperature:35.0 .C
+ --------------------------------------------
+gpon-olt-Estero-Medio(config)#
+
+========== show alarm summary ==========
+show alarm summary
+
+alarm summary: 0
+gpon-olt-Estero-Medio(config)#
+
+========== show operationlog ==========
+show operationlog
+% Command incomplete.
+gpon-olt-Estero-Medio(config)#
+
+========== show alarm oamlog ==========
+
+
+========== show schedule ==========
+show alarm oamlog
+2026/05/19 10:51:07 major       User Login                   User Manuel-205.235.6.129-telnet log in.
+2026/05/19 10:49:56 major       User Logout                  User Manuel-205.235.6.129-telnet log out.
+2026/05/19 10:49:22 major       User Login                   User Manuel-205.235.6.129-telnet log in.
+2026/05/19 10:38:44 major       User Logout                  User Manuel-205.235.6.129-telnet log out.
+2026/05/19 10:37:55 major       User Login                   User Manuel-205.235.6.129-telnet log in.
+2026/05/19 10:36:49 major       User Logout                  User Manuel-205.235.6.129-telnet log out.
+2026/05/19 10:36:38 major       ONU Port Los                 PON 0/3 ONU 2 sn SKYWb810f2cc  LAN1 LINK DOWN
+2026/05/19 10:36:25 major       User Login                   User Manuel-205.235.6.129-telnet log in.
+2026/05/19 10:35:52 major       User Logout                  User Manuel-205.235.6.129-telnet log out.
+2026/05/19 10:35:35 major       User Login                   User Manuel-205.235.6.129-telnet log in.
+2026/05/19 10:34:26 major       User Logout                  User Manuel logouted from 205.235.6.129 on web
+2026/05/19 10:32:50 major       User Logout                  User Manuel-205.235.6.129-telnet log out.
+2026/05/19 10:32:45 major       User Login                   User Manuel-205.235.6.129-telnet log in.
+2026/05/19 10:31:41 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/19 10:28:29 major       User Logout                  User Manuel-205.235.6.129-telnet log out.
+2026/05/19 10:22:08 major       User Login                   User Manuel logged in from 205.235.6.129 on web
+2026/05/19 10:01:46 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/19 09:59:56 major       ONU Port Los                 PON 0/1 ONU 28 sn HWTC008a9bee  LAN1 LINK DOWN
+2026/05/19 09:48:04 major       ONU Online                   PON 0/5 ONU 59 sn HWTC1b04ed2b 
+2026/05/19 09:47:49 major       ONU Offline                  PON 0/5 ONU 59 sn HWTC1b04ed2b 
+2026/05/19 09:46:19 major       ONU Port Los                 PON 0/3 ONU 63 sn HWTC1b02492b  LAN1 LINK DOWN
+2026/05/19 09:46:18 major       ONU Online                   PON 0/3 ONU 63 sn HWTC1b02492b 
+2026/05/19 09:45:36 major       ONU Port Los                 PON 0/1 ONU 41 sn SKYWb811434f  LAN4 LINK DOWN
+2026/05/19 09:45:36 major       ONU Port Los                 PON 0/1 ONU 41 sn SKYWb811434f  LAN3 LINK DOWN
+2026/05/19 09:45:36 major       ONU Port Los                 PON 0/1 ONU 41 sn SKYWb811434f  LAN2 LINK DOWN
+2026/05/19 09:45:36 major       ONU Port Los                 PON 0/1 ONU 41 sn SKYWb811434f  LAN1 LINK DOWN
+2026/05/19 09:45:33 major       ONU Online                   PON 0/1 ONU 41 sn SKYWb811434f 
+2026/05/19 09:43:55 major       ONU Offline                  PON 0/1 ONU 41 sn SKYWb811434f 
+2026/05/19 09:43:54 major       ONU Dying Gasp               PON 0/1 ONU 41 sn SKYWb811434f 
+2026/05/19 09:40:20 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/19 09:39:24 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/19 09:33:24 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/19 09:32:54 major       ONU Port Los                 PON 0/1 ONU 19 sn HWTCc8bfc8c0  LAN1 LINK DOWN
+2026/05/19 09:32:53 major       ONU Online                   PON 0/1 ONU 19 sn HWTCc8bfc8c0 
+2026/05/19 09:32:27 major       ONU Online                   PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/19 09:32:26 major       ONU Port Los                 PON 0/2 ONU 45 sn HWTC47d97cb2  LAN1 LINK DOWN
+2026/05/19 09:31:47 major       ONU Offline                  PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/19 09:31:46 major       ONU Port Los                 PON 0/2 ONU 45 sn HWTC47d97cb2  LAN1 LINK DOWN
+2026/05/19 09:31:45 major       ONU Dying Gasp               PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/19 09:31:44 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/19 09:28:57 major       ONU Offline                  PON 0/1 ONU 19 sn HWTCc8bfc8c0 
+2026/05/19 09:28:57 major       ONU Dying Gasp               PON 0/1 ONU 19 sn HWTCc8bfc8c0 
+2026/05/19 09:28:23 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/19 09:28:17 major       ONU Online                   PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/19 09:28:16 major       ONU Port Los                 PON 0/2 ONU 45 sn HWTC47d97cb2  LAN1 LINK DOWN
+2026/05/19 09:27:47 major       ONU Port Los                 PON 0/7 ONU 36 sn CDTCa6d54903  LAN2 LINK DOWN
+2026/05/19 09:27:30 major       ONU Offline                  PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/19 09:27:30 major       ONU Dying Gasp               PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/19 09:21:17 major       ONU Online                   PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/19 09:21:16 major       ONU Port Los                 PON 0/2 ONU 45 sn HWTC47d97cb2  LAN1 LINK DOWN
+2026/05/19 09:20:32 major       ONU Offline                  PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/19 09:20:31 major       ONU Port Los                 PON 0/2 ONU 45 sn HWTC47d97cb2  LAN1 LINK DOWN
+2026/05/19 09:20:31 major       ONU Dying Gasp               PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/19 09:01:40 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/19 08:55:04 major       ONU Port Los                 PON 0/1 ONU 12 sn HWTCc8bfc373  LAN1 LINK DOWN
+2026/05/19 08:55:03 major       ONU Online                   PON 0/1 ONU 12 sn HWTCc8bfc373 
+2026/05/19 08:54:23 major       ONU Offline                  PON 0/1 ONU 12 sn HWTCc8bfc373 
+2026/05/19 08:54:23 major       ONU Dying Gasp               PON 0/1 ONU 12 sn HWTCc8bfc373 
+2026/05/19 08:35:47 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/19 08:31:39 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/19 08:31:38 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/19 08:03:00 major       User Logout                  User Manuel logouted from 205.235.6.129 on web
+2026/05/19 08:02:05 major       ONU Online                   PON 0/1 ONU 39 sn HWTC548b808a 
+2026/05/19 08:02:04 major       ONU Port Los                 PON 0/1 ONU 39 sn HWTC548b808a  LAN1 LINK DOWN
+2026/05/19 08:01:38 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/19 08:01:05 major       ONU Offline                  PON 0/1 ONU 39 sn HWTC548b808a 
+2026/05/19 08:01:05 major       ONU Dying Gasp               PON 0/1 ONU 39 sn HWTC548b808a 
+2026/05/19 07:50:39 major       User Login                   User Manuel logged in from 205.235.6.129 on web
+2026/05/19 07:41:35 major       ONU Online                   PON 0/1 ONU 39 sn HWTC548b808a 
+2026/05/19 07:41:34 major       ONU Port Los                 PON 0/1 ONU 39 sn HWTC548b808a  LAN1 LINK DOWN
+2026/05/19 07:39:46 major       ONU Offline                  PON 0/1 ONU 39 sn HWTC548b808a 
+2026/05/19 07:39:46 major       ONU Dying Gasp               PON 0/1 ONU 39 sn HWTC548b808a 
+2026/05/19 07:31:36 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/19 07:21:27 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/19 07:08:31 major       ONU Offline                  PON 0/3 ONU 63 sn HWTC1b02492b 
+2026/05/19 07:08:31 major       ONU Dying Gasp               PON 0/3 ONU 63 sn HWTC1b02492b 
+2026/05/19 07:02:31 major       ONU Port Los                 PON 0/1 ONU 28 sn HWTC008a9bee  LAN1 LINK DOWN
+2026/05/19 07:01:41 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/19 07:01:04 major       ONU Port Los                 PON 0/1 ONU 3 sn HWTC69daa373  LAN1 LINK DOWN
+2026/05/19 07:00:31 major       ONU Port Los                 PON 0/7 ONU 26 sn HWTC19ea366a  LAN1 LINK DOWN
+2026/05/19 07:00:09 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/19 06:55:27 major       ONU Online                   PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/19 06:55:26 major       ONU Port Los                 PON 0/2 ONU 45 sn HWTC47d97cb2  LAN1 LINK DOWN
+2026/05/19 06:54:37 major       ONU Offline                  PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/19 06:54:37 major       ONU Dying Gasp               PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/19 06:46:07 major       ONU Port Los                 PON 0/2 ONU 45 sn HWTC47d97cb2  LAN1 LINK DOWN
+2026/05/19 06:46:07 major       ONU Online                   PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/19 06:45:27 major       ONU Offline                  PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/19 06:45:26 major       ONU Port Los                 PON 0/2 ONU 45 sn HWTC47d97cb2  LAN1 LINK DOWN
+2026/05/19 06:45:26 major       ONU Dying Gasp               PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/19 06:31:36 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/19 06:22:27 major       ONU Online                   PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/19 06:22:26 major       ONU Port Los                 PON 0/2 ONU 45 sn HWTC47d97cb2  LAN1 LINK DOWN
+2026/05/19 06:21:34 major       ONU Offline                  PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/19 06:21:34 major       ONU Dying Gasp               PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/19 06:14:39 major       ONU Port Los                 PON 0/3 ONU 2 sn SKYWb810f2cc  LAN1 LINK DOWN
+2026/05/19 06:08:31 major       ONU Port Los                 PON 0/1 ONU 28 sn HWTC008a9bee  LAN1 LINK DOWN
+2026/05/19 06:01:35 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/19 06:01:25 major       ONU Port Los                 PON 0/2 ONU 22 sn HWTCc69b0110  LAN1 LINK DOWN
+2026/05/19 06:01:09 major       ONU Port Los                 PON 0/3 ONU 16 sn HWTC7dadaa5c  LAN1 LINK DOWN
+2026/05/19 06:01:02 major       ONU Port Los                 PON 0/7 ONU 34 sn HWTC7ae4d88a  LAN1 LINK DOWN
+2026/05/19 06:00:54 major       ONU Port Los                 PON 0/3 ONU 16 sn HWTC7dadaa5c  LAN1 LINK DOWN
+2026/05/19 06:00:51 major       ONU Port Los                 PON 0/1 ONU 34 sn HWTCf6fd4b48  LAN1 LINK DOWN
+2026/05/19 06:00:43 major       ONU Port Los                 PON 0/7 ONU 3 sn HWTCf3dd4fb2  LAN1 LINK DOWN
+2026/05/19 06:00:05 major       ONU Port Los                 PON 0/2 ONU 22 sn HWTCc69b0110  LAN1 LINK DOWN
+2026/05/19 05:59:07 major       ONU Online                   PON 0/2 ONU 24 sn HWTC338fa14a 
+2026/05/19 05:59:06 major       ONU Port Los                 PON 0/2 ONU 24 sn HWTC338fa14a  LAN1 LINK DOWN
+2026/05/19 05:58:08 major       ONU Offline                  PON 0/2 ONU 24 sn HWTC338fa14a 
+2026/05/19 05:58:08 major       ONU Dying Gasp               PON 0/2 ONU 24 sn HWTC338fa14a 
+2026/05/19 05:57:08 major       ONU Offline                  PON 0/2 ONU 27 sn HWTCd4d9162e 
+2026/05/19 05:51:04 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/19 05:50:05 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/19 05:49:24 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/19 05:45:16 major       ONU Online                   PON 0/2 ONU 24 sn HWTC338fa14a 
+2026/05/19 05:45:16 major       ONU Port Los                 PON 0/2 ONU 24 sn HWTC338fa14a  LAN1 LINK DOWN
+2026/05/19 05:44:06 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/19 05:39:13 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/19 05:20:59 major       ONU Online                   PON 0/5 ONU 83 sn HWTC3b4fdca2 
+2026/05/19 05:20:58 major       ONU Port Los                 PON 0/5 ONU 83 sn HWTC3b4fdca2  LAN1 LINK DOWN
+2026/05/19 05:13:34 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN1 LINK DOWN
+2026/05/19 05:13:03 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/19 05:12:33 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/19 05:10:30 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN1 LINK DOWN
+2026/05/19 05:01:18 major       ONU Port Los                 PON 0/1 ONU 21 sn HWTCffb215a2  LAN1 LINK DOWN
+2026/05/19 05:01:03 major       ONU Port Los                 PON 0/1 ONU 21 sn HWTCffb215a2  LAN1 LINK DOWN
+2026/05/19 04:35:42 major       ONU Port Los                 PON 0/1 ONU 35 sn SKYWb80ffad5  LAN4 LINK DOWN
+2026/05/19 04:31:34 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/19 04:01:38 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/19 04:01:26 major       ONU Port Los                 PON 0/7 ONU 14 sn HWTCc8bfc945  LAN1 LINK DOWN
+2026/05/19 04:00:21 major       ONU Port Los                 PON 0/7 ONU 14 sn HWTCc8bfc945  LAN1 LINK DOWN
+2026/05/19 04:00:06 major       ONU Port Los                 PON 0/7 ONU 14 sn HWTCc8bfc945  LAN1 LINK DOWN
+2026/05/19 03:31:38 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/19 03:31:11 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/19 03:01:48 major       ONU Port Los                 PON 0/7 ONU 32 sn HWTCc8bfc3b8  LAN1 LINK DOWN
+2026/05/19 03:01:35 major       ONU Port Los                 PON 0/2 ONU 27 sn HWTCd4d9162e  LAN1 LINK DOWN
+2026/05/19 03:01:34 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/19 03:01:34 major       ONU Port Los                 PON 0/3 ONU 81 sn HWTCd6bcb69c  LAN1 LINK DOWN
+2026/05/19 03:01:33 major       ONU Port Los                 PON 0/7 ONU 32 sn HWTCc8bfc3b8  LAN1 LINK DOWN
+2026/05/19 03:01:06 major       ONU Port Los                 PON 0/5 ONU 44 sn HWTCc8bfc19e  LAN1 LINK DOWN
+2026/05/19 03:01:04 major       ONU Port Los                 PON 0/1 ONU 36 sn HWTC9edfdfa2  LAN1 LINK DOWN
+2026/05/19 03:01:04 major       ONU Port Los                 PON 0/3 ONU 30 sn HWTCc8bfc964  LAN1 LINK DOWN
+2026/05/19 03:01:04 major       ONU Port Los                 PON 0/7 ONU 11 sn HWTC72b3cf74  LAN1 LINK DOWN
+2026/05/19 03:01:03 major       ONU Port Los                 PON 0/7 ONU 25 sn HWTC396ee57d  LAN1 LINK DOWN
+2026/05/19 03:01:02 major       ONU Port Los                 PON 0/5 ONU 55 sn HWTC6862be8a  LAN1 LINK DOWN
+2026/05/19 03:00:54 major       ONU Port Los                 PON 0/3 ONU 85 sn HWTCc8bfc404  LAN1 LINK DOWN
+2026/05/19 03:00:49 major       ONU Port Los                 PON 0/1 ONU 16 sn HWTCf17c76b2  LAN1 LINK DOWN
+2026/05/19 03:00:47 major       ONU Port Los                 PON 0/3 ONU 72 sn HWTC858adbb2  LAN1 LINK DOWN
+2026/05/19 03:00:45 major       ONU Port Los                 PON 0/2 ONU 14 sn HWTC2fdb8917  LAN1 LINK DOWN
+2026/05/19 03:00:35 major       ONU Port Los                 PON 0/2 ONU 2 sn HWTC898fa0a6  LAN1 LINK DOWN
+2026/05/19 03:00:31 major       ONU Port Los                 PON 0/2 ONU 14 sn HWTC2fdb8917  LAN1 LINK DOWN
+2026/05/19 03:00:30 major       ONU Port Los                 PON 0/2 ONU 48 sn HWTC1e189164  LAN1 LINK DOWN
+2026/05/19 03:00:23 major       ONU Port Los                 PON 0/3 ONU 82 sn HWTCa2cba5b2  LAN1 LINK DOWN
+2026/05/19 03:00:22 major       ONU Port Los                 PON 0/1 ONU 18 sn HWTCfb61e65a  LAN1 LINK DOWN
+2026/05/19 03:00:22 major       ONU Port Los                 PON 0/5 ONU 62 sn HWTC8faf79b2  LAN1 LINK DOWN
+2026/05/19 03:00:20 major       ONU Port Los                 PON 0/2 ONU 2 sn HWTC898fa0a6  LAN1 LINK DOWN
+2026/05/19 03:00:18 major       ONU Port Los                 PON 0/5 ONU 82 sn HWTCd5f8c6b2  LAN1 LINK DOWN
+2026/05/19 03:00:14 major       ONU Port Los                 PON 0/3 ONU 81 sn HWTCd6bcb69c  LAN1 LINK DOWN
+2026/05/19 03:00:08 major       ONU Port Los                 PON 0/7 ONU 32 sn HWTCc8bfc3b8  LAN1 LINK DOWN
+2026/05/19 03:00:05 major       ONU Port Los                 PON 0/2 ONU 27 sn HWTCd4d9162e  LAN1 LINK DOWN
+2026/05/19 02:31:33 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/19 02:22:10 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/19 02:01:37 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/19 01:57:12 major       ONU Offline                  PON 0/5 ONU 83 sn HWTC3b4fdca2 
+2026/05/19 01:57:12 major       ONU Dying Gasp               PON 0/5 ONU 83 sn HWTC3b4fdca2 
+2026/05/19 01:31:35 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/19 01:01:48 major       ONU Port Los                 PON 0/1 ONU 19 sn HWTCc8bfc8c0  LAN1 LINK DOWN
+2026/05/19 01:01:36 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/19 01:01:33 major       ONU Port Los                 PON 0/7 ONU 28 sn HWTCc8bfc3ba  LAN1 LINK DOWN
+2026/05/19 01:01:32 major       ONU Port Los                 PON 0/7 ONU 2 sn HWTC55dd094a  LAN1 LINK DOWN
+2026/05/19 01:01:31 major       ONU Port Los                 PON 0/1 ONU 40 sn HWTC611f699b  LAN1 LINK DOWN
+2026/05/19 01:01:29 major       ONU Port Los                 PON 0/5 ONU 71 sn HWTC8c7fea9d  LAN2 LINK DOWN
+2026/05/19 01:01:19 major       ONU Port Los                 PON 0/3 ONU 66 sn HWTCfb6ef79c  LAN1 LINK DOWN
+2026/05/19 01:01:18 major       ONU Port Los                 PON 0/5 ONU 76 sn HWTCc8bfc18f  LAN1 LINK DOWN
+2026/05/19 01:01:13 major       ONU Port Los                 PON 0/1 ONU 13 sn HWTCaa17db45  LAN1 LINK DOWN
+2026/05/19 01:01:09 major       ONU Port Los                 PON 0/3 ONU 66 sn HWTCfb6ef79c  LAN1 LINK DOWN
+2026/05/19 01:00:54 major       ONU Port Los                 PON 0/5 ONU 75 sn HWTC8a68559d  LAN1 LINK DOWN
+2026/05/19 01:00:44 major       ONU Port Los                 PON 0/5 ONU 75 sn HWTC8a68559d  LAN1 LINK DOWN
+2026/05/19 01:00:39 major       ONU Port Los                 PON 0/2 ONU 15 sn HWTC417d39a1  LAN1 LINK DOWN
+2026/05/19 00:57:14 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/19 00:51:34 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/19 00:50:40 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/19 00:44:34 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/19 00:40:47 major       ONU Port Los                 PON 0/3 ONU 2 sn SKYWb810f2cc  LAN1 LINK DOWN
+2026/05/19 00:39:39 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/19 00:01:28 major       ONU Port Los                 PON 0/7 ONU 8 sn HWTC495cf72a  LAN1 LINK DOWN
+2026/05/18 23:56:29 major       ONU Port Los                 PON 0/7 ONU 36 sn CDTCa6d54903  LAN2 LINK DOWN
+2026/05/18 22:58:25 major       ONU Port Los                 PON 0/1 ONU 35 sn SKYWb80ffad5  LAN4 LINK DOWN
+2026/05/18 22:54:18 major       ONU Port Los                 PON 0/5 ONU 58 sn HWTCfb532d9c  LAN2 LINK DOWN
+2026/05/18 22:54:18 major       ONU Port Los                 PON 0/5 ONU 58 sn HWTCfb532d9c  LAN1 LINK DOWN
+2026/05/18 22:54:17 major       ONU Online                   PON 0/5 ONU 58 sn HWTCfb532d9c 
+2026/05/18 22:53:33 major       ONU Port Los                 PON 0/1 ONU 15 sn SKYWb8102c4f  LAN4 LINK DOWN
+2026/05/18 22:50:37 major       ONU Offline                  PON 0/5 ONU 58 sn HWTCfb532d9c 
+2026/05/18 22:50:37 major       ONU Dying Gasp               PON 0/5 ONU 58 sn HWTCfb532d9c 
+2026/05/18 22:08:02 major       ONU Port Los                 PON 0/7 ONU 7 sn HWTCf3ae562a  LAN1 LINK DOWN
+2026/05/18 22:08:01 major       ONU Online                   PON 0/7 ONU 7 sn HWTCf3ae562a 
+2026/05/18 22:07:13 major       ONU Offline                  PON 0/7 ONU 7 sn HWTCf3ae562a 
+2026/05/18 22:07:13 major       ONU Dying Gasp               PON 0/7 ONU 7 sn HWTCf3ae562a 
+2026/05/18 22:06:20 major       ONU Port Los                 PON 0/3 ONU 74 sn SKYWb8111efe  LAN4 LINK DOWN
+2026/05/18 22:06:18 major       ONU Port Los                 PON 0/7 ONU 7 sn HWTCf3ae562a  LAN1 LINK DOWN
+2026/05/18 22:06:08 major       ONU Port Los                 PON 0/7 ONU 7 sn HWTCf3ae562a  LAN1 LINK DOWN
+2026/05/18 22:05:03 major       ONU Port Los                 PON 0/7 ONU 7 sn HWTCf3ae562a  LAN1 LINK DOWN
+2026/05/18 22:04:54 major       ONU Port Los                 PON 0/7 ONU 7 sn HWTCf3ae562a  LAN1 LINK DOWN
+2026/05/18 22:01:29 major       ONU Port Los                 PON 0/1 ONU 10 sn HWTC3bb1005c  LAN1 LINK DOWN
+2026/05/18 22:00:55 major       ONU Port Los                 PON 0/5 ONU 86 sn HWTC1ccc1fa1  LAN1 LINK DOWN
+2026/05/18 22:00:28 major       ONU Online                   PON 0/4 ONU 25 sn HWTC0f61409b 
+2026/05/18 22:00:27 major       ONU Port Los                 PON 0/4 ONU 25 sn HWTC0f61409b  LAN1 LINK DOWN
+2026/05/18 22:00:24 major       ONU Port Los                 PON 0/1 ONU 1 sn HWTC1fbd8a77  LAN1 LINK DOWN
+2026/05/18 21:59:38 major       ONU Offline                  PON 0/4 ONU 25 sn HWTC0f61409b 
+2026/05/18 21:59:38 major       ONU Dying Gasp               PON 0/4 ONU 25 sn HWTC0f61409b 
+2026/05/18 21:41:38 major       ONU Port Los                 PON 0/7 ONU 7 sn HWTCf3ae562a  LAN1 LINK DOWN
+2026/05/18 21:36:17 major       ONU Port Los                 PON 0/2 ONU 44 sn HWTCf4ae2a2a  LAN1 LINK DOWN
+2026/05/18 21:36:16 major       ONU Online                   PON 0/2 ONU 44 sn HWTCf4ae2a2a 
+2026/05/18 21:35:29 major       ONU Offline                  PON 0/2 ONU 44 sn HWTCf4ae2a2a 
+2026/05/18 21:35:29 major       ONU Dying Gasp               PON 0/2 ONU 44 sn HWTCf4ae2a2a 
+2026/05/18 21:28:30 major       ONU Offline                  PON 0/2 ONU 24 sn HWTC338fa14a 
+2026/05/18 21:28:30 major       ONU Dying Gasp               PON 0/2 ONU 24 sn HWTC338fa14a 
+2026/05/18 20:51:16 major       ONU Port Los                 PON 0/1 ONU 28 sn HWTC008a9bee  LAN1 LINK DOWN
+2026/05/18 20:47:31 major       ONU Port Los                 PON 0/7 ONU 13 sn HWTCfc8948a6  LAN1 LINK DOWN
+2026/05/18 20:41:02 major       ONU Port Los                 PON 0/1 ONU 35 sn SKYWb80ffad5  LAN4 LINK DOWN
+2026/05/18 20:26:45 major       ONU Port Los                 PON 0/2 ONU 46 sn HWTCa4a74168  LAN1 LINK DOWN
+2026/05/18 20:25:17 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 20:23:26 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 20:22:20 major       ONU Port Los                 PON 0/3 ONU 2 sn SKYWb810f2cc  LAN1 LINK DOWN
+2026/05/18 20:19:07 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 20:17:20 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 20:12:51 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 20:11:15 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 20:08:30 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 19:44:53 major       ONU Online                   PON 0/7 ONU 24 sn CDTCa6d54e5b 
+2026/05/18 19:43:40 major       ONU Offline                  PON 0/7 ONU 24 sn CDTCa6d54e5b 
+2026/05/18 19:43:40 major       ONU Dying Gasp               PON 0/7 ONU 24 sn CDTCa6d54e5b 
+2026/05/18 19:19:56 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 19:17:52 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 19:10:19 major       ONU Port Los                 PON 0/1 ONU 25 sn SKYWb8111543  LAN4 LINK DOWN
+2026/05/18 19:10:19 major       ONU Port Los                 PON 0/1 ONU 25 sn SKYWb8111543  LAN3 LINK DOWN
+2026/05/18 19:10:19 major       ONU Port Los                 PON 0/1 ONU 25 sn SKYWb8111543  LAN2 LINK DOWN
+2026/05/18 19:10:19 major       ONU Port Los                 PON 0/1 ONU 25 sn SKYWb8111543  LAN1 LINK DOWN
+2026/05/18 19:10:17 major       ONU Port Los                 PON 0/1 ONU 25 sn SKYWb8111543  LAN4 LINK DOWN
+2026/05/18 19:10:17 major       ONU Port Los                 PON 0/1 ONU 25 sn SKYWb8111543  LAN3 LINK DOWN
+2026/05/18 19:10:17 major       ONU Port Los                 PON 0/1 ONU 25 sn SKYWb8111543  LAN2 LINK DOWN
+2026/05/18 19:10:17 major       ONU Port Los                 PON 0/1 ONU 25 sn SKYWb8111543  LAN1 LINK DOWN
+2026/05/18 19:10:13 major       ONU Online                   PON 0/1 ONU 25 sn SKYWb8111543 
+2026/05/18 19:09:34 major       ONU Offline                  PON 0/1 ONU 25 sn SKYWb8111543 
+2026/05/18 19:09:33 major       ONU Dying Gasp               PON 0/1 ONU 25 sn SKYWb8111543 
+2026/05/18 19:03:59 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN1 LINK DOWN
+2026/05/18 19:00:35 major       ONU Offline                  PON 0/5 ONU 85 sn HWTC1b30da2b 
+2026/05/18 19:00:35 major       ONU Dying Gasp               PON 0/5 ONU 85 sn HWTC1b30da2b 
+2026/05/18 18:51:26 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 18:50:19 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 18:40:57 major       ONU Port Los                 PON 0/1 ONU 25 sn SKYWb8111543  LAN4 LINK DOWN
+2026/05/18 18:40:57 major       ONU Port Los                 PON 0/1 ONU 25 sn SKYWb8111543  LAN3 LINK DOWN
+2026/05/18 18:40:57 major       ONU Port Los                 PON 0/1 ONU 25 sn SKYWb8111543  LAN2 LINK DOWN
+2026/05/18 18:40:57 major       ONU Port Los                 PON 0/1 ONU 25 sn SKYWb8111543  LAN1 LINK DOWN
+2026/05/18 18:40:53 major       ONU Online                   PON 0/1 ONU 25 sn SKYWb8111543 
+2026/05/18 18:40:11 major       ONU Offline                  PON 0/1 ONU 25 sn SKYWb8111543 
+2026/05/18 18:40:10 major       ONU Dying Gasp               PON 0/1 ONU 25 sn SKYWb8111543 
+2026/05/18 18:38:53 major       ONU Online                   PON 0/7 ONU 29 sn CDTCa6d551db 
+2026/05/18 18:38:51 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 18:37:35 major       ONU Offline                  PON 0/7 ONU 29 sn CDTCa6d551db 
+2026/05/18 18:37:35 major       ONU Dying Gasp               PON 0/7 ONU 29 sn CDTCa6d551db 
+2026/05/18 18:32:13 major       ONU Online                   PON 0/7 ONU 10 sn HWTC32b7ef9b 
+2026/05/18 18:32:13 major       ONU Port Los                 PON 0/7 ONU 10 sn HWTC32b7ef9b  LAN1 LINK DOWN
+2026/05/18 18:31:18 major       ONU Offline                  PON 0/7 ONU 10 sn HWTC32b7ef9b 
+2026/05/18 18:31:18 major       ONU Dying Gasp               PON 0/7 ONU 10 sn HWTC32b7ef9b 
+2026/05/18 18:26:06 major       ONU Port Los                 PON 0/1 ONU 35 sn SKYWb80ffad5  LAN4 LINK DOWN
+2026/05/18 18:21:30 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 18:20:36 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 18:14:30 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 18:10:23 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 18:09:39 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 17:57:44 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/18 17:46:25 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/18 17:30:28 major       ONU Port Los                 PON 0/5 ONU 58 sn HWTCfb532d9c  LAN2 LINK DOWN
+2026/05/18 17:30:28 major       ONU Port Los                 PON 0/5 ONU 58 sn HWTCfb532d9c  LAN1 LINK DOWN
+2026/05/18 17:30:27 major       ONU Online                   PON 0/5 ONU 58 sn HWTCfb532d9c 
+2026/05/18 17:28:05 major       ONU Offline                  PON 0/5 ONU 58 sn HWTCfb532d9c 
+2026/05/18 17:28:05 major       ONU Dying Gasp               PON 0/5 ONU 58 sn HWTCfb532d9c 
+2026/05/18 17:23:39 major       ONU Online                   PON 0/5 ONU 84 sn HWTC61c3dd66 
+2026/05/18 17:23:38 major       ONU Port Los                 PON 0/5 ONU 84 sn HWTC61c3dd66  LAN1 LINK DOWN
+2026/05/18 17:21:21 major       ONU Offline                  PON 0/5 ONU 84 sn HWTC61c3dd66 
+2026/05/18 17:21:20 major       ONU Dying Gasp               PON 0/5 ONU 84 sn HWTC61c3dd66 
+2026/05/18 17:18:23 major       ONU Online                   PON 0/7 ONU 29 sn CDTCa6d551db 
+2026/05/18 17:15:41 major       ONU Offline                  PON 0/7 ONU 29 sn CDTCa6d551db 
+2026/05/18 17:15:41 major       ONU Dying Gasp               PON 0/7 ONU 29 sn CDTCa6d551db 
+2026/05/18 17:02:01 major       ONU Port Los                 PON 0/1 ONU 35 sn SKYWb80ffad5  LAN4 LINK DOWN
+2026/05/18 16:50:50 major       ONU Online                   PON 0/3 ONU 82 sn HWTCa2cba5b2 
+2026/05/18 16:50:48 major       ONU Port Los                 PON 0/3 ONU 82 sn HWTCa2cba5b2  LAN1 LINK DOWN
+2026/05/18 16:49:34 major       ONU Offline                  PON 0/3 ONU 82 sn HWTCa2cba5b2 
+2026/05/18 16:49:34 major       ONU Dying Gasp               PON 0/3 ONU 82 sn HWTCa2cba5b2 
+2026/05/18 16:42:36 major       ONU Dying Gasp               PON 0/1 ONU 25 sn SKYWb8111543 
+2026/05/18 16:41:05 major       ONU Dying Gasp               PON 0/1 ONU 25 sn SKYWb8111543 
+2026/05/18 15:40:39 major       ONU Online                   PON 0/5 ONU 85 sn HWTC1b30da2b 
+2026/05/18 15:40:38 major       ONU Port Los                 PON 0/5 ONU 85 sn HWTC1b30da2b  LAN1 LINK DOWN
+2026/05/18 15:40:22 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/18 15:38:20 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/18 15:37:30 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/18 15:33:55 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/18 15:24:33 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 15:18:16 major       ONU Port Los                 PON 0/2 ONU 27 sn HWTCd4d9162e  LAN1 LINK DOWN
+2026/05/18 15:18:14 major       ONU Online                   PON 0/2 ONU 27 sn HWTCd4d9162e 
+2026/05/18 15:15:41 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 15:15:10 major       ONU Port Los                 PON 0/3 ONU 2 sn SKYWb810f2cc  LAN1 LINK DOWN
+2026/05/18 15:13:19 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 15:13:02 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/18 15:06:23 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 15:01:22 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 15:00:22 major       ONU Port Los                 PON 0/1 ONU 35 sn SKYWb80ffad5  LAN4 LINK DOWN
+2026/05/18 14:54:53 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/18 14:52:06 major       ONU Online                   PON 0/2 ONU 32 sn HWTCd11794b2 
+2026/05/18 14:52:06 major       ONU Port Los                 PON 0/2 ONU 32 sn HWTCd11794b2  LAN1 LINK DOWN
+2026/05/18 14:51:15 major       ONU Offline                  PON 0/2 ONU 32 sn HWTCd11794b2 
+2026/05/18 14:51:15 major       ONU Dying Gasp               PON 0/2 ONU 32 sn HWTCd11794b2 
+2026/05/18 14:25:18 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/18 14:24:56 major       ONU Online                   PON 0/2 ONU 32 sn HWTCd11794b2 
+2026/05/18 14:24:56 major       ONU Port Los                 PON 0/2 ONU 32 sn HWTCd11794b2  LAN1 LINK DOWN
+2026/05/18 14:20:47 major       ONU Offline                  PON 0/2 ONU 32 sn HWTCd11794b2 
+2026/05/18 14:20:46 major       ONU Dying Gasp               PON 0/2 ONU 32 sn HWTCd11794b2 
+2026/05/18 14:18:20 major       ONU Port Los                 PON 0/2 ONU 46 sn HWTCa4a74168  LAN1 LINK DOWN
+2026/05/18 14:17:56 major       ONU Online                   PON 0/2 ONU 32 sn HWTCd11794b2 
+2026/05/18 14:17:56 major       ONU Port Los                 PON 0/2 ONU 32 sn HWTCd11794b2  LAN1 LINK DOWN
+2026/05/18 14:17:09 major       ONU Port Los                 PON 0/2 ONU 43 sn SKYWb8112d68  LAN1 LINK DOWN
+2026/05/18 14:16:17 major       ONU Port Los                 PON 0/1 ONU 25 sn SKYWb8111543  LAN4 LINK DOWN
+2026/05/18 14:16:17 major       ONU Port Los                 PON 0/1 ONU 25 sn SKYWb8111543  LAN3 LINK DOWN
+2026/05/18 14:16:17 major       ONU Port Los                 PON 0/1 ONU 25 sn SKYWb8111543  LAN2 LINK DOWN
+2026/05/18 14:16:17 major       ONU Port Los                 PON 0/1 ONU 25 sn SKYWb8111543  LAN1 LINK DOWN
+2026/05/18 14:16:14 major       ONU Online                   PON 0/1 ONU 25 sn SKYWb8111543 
+2026/05/18 14:15:27 major       ONU Offline                  PON 0/1 ONU 25 sn SKYWb8111543 
+2026/05/18 14:15:27 major       ONU Dying Gasp               PON 0/1 ONU 25 sn SKYWb8111543 
+2026/05/18 14:14:04 major       ONU Offline                  PON 0/2 ONU 32 sn HWTCd11794b2 
+2026/05/18 14:14:03 major       ONU Dying Gasp               PON 0/2 ONU 32 sn HWTCd11794b2 
+2026/05/18 14:07:25 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 14:07:14 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 14:07:06 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 14:06:20 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 14:06:01 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 14:05:53 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 14:05:42 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 14:05:34 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 14:05:23 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 14:05:15 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 14:05:05 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 14:04:56 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 14:04:46 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 14:04:37 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 14:01:31 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 14:01:04 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 14:00:10 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 14:00:02 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 13:46:43 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 13:45:07 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 13:44:57 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 13:44:36 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 13:44:28 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 13:44:17 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 13:44:07 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 13:43:35 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 13:43:27 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 13:43:17 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 13:42:58 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 13:42:39 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 13:42:10 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 13:41:59 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 13:41:51 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 13:41:40 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 13:41:22 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 13:40:23 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 13:38:28 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 13:38:14 major       ONU Port Los                 PON 0/3 ONU 2 sn SKYWb810f2cc  LAN1 LINK DOWN
+2026/05/18 13:38:01 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 13:34:26 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 13:30:13 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 12:57:36 major       ONU Online                   PON 0/2 ONU 47 sn HWTC2d572d5b 
+2026/05/18 12:57:36 major       ONU Port Los                 PON 0/2 ONU 47 sn HWTC2d572d5b  LAN1 LINK DOWN
+2026/05/18 12:54:58 major       ONU Online                   PON 0/4 ONU 1 sn HWTC8dcdc62a 
+2026/05/18 12:54:58 major       ONU Port Los                 PON 0/4 ONU 1 sn HWTC8dcdc62a  LAN1 LINK DOWN
+2026/05/18 12:54:28 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 12:54:01 major       ONU Port Los                 PON 0/7 ONU 26 sn HWTC19ea366a  LAN1 LINK DOWN
+2026/05/18 12:54:00 major       ONU Port Los                 PON 0/2 ONU 50 sn SKYWb8112d36  LAN4 LINK DOWN
+2026/05/18 12:54:00 major       ONU Offline                  PON 0/2 ONU 47 sn HWTC2d572d5b 
+2026/05/18 12:54:00 major       ONU Offline                  PON 0/4 ONU 1 sn HWTC8dcdc62a 
+2026/05/18 12:54:00 major       ONU Dying Gasp               PON 0/2 ONU 47 sn HWTC2d572d5b 
+2026/05/18 12:54:00 major       ONU Dying Gasp               PON 0/4 ONU 1 sn HWTC8dcdc62a 
+2026/05/18 12:40:29 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 12:13:36 major       ONU Online                   PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/18 12:13:36 major       ONU Port Los                 PON 0/2 ONU 45 sn HWTC47d97cb2  LAN1 LINK DOWN
+2026/05/18 12:12:52 major       ONU Offline                  PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/18 12:12:26 major       ONU Port Los                 PON 0/2 ONU 45 sn HWTC47d97cb2  LAN1 LINK DOWN
+2026/05/18 12:12:22 major       ONU Dying Gasp               PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/18 12:11:46 major       ONU Online                   PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/18 12:11:46 major       ONU Port Los                 PON 0/2 ONU 45 sn HWTC47d97cb2  LAN1 LINK DOWN
+2026/05/18 12:11:06 major       ONU Offline                  PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/18 12:11:05 major       ONU Dying Gasp               PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/18 12:10:28 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 12:08:46 major       ONU Online                   PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/18 12:08:46 major       ONU Port Los                 PON 0/2 ONU 45 sn HWTC47d97cb2  LAN1 LINK DOWN
+2026/05/18 12:07:55 major       ONU Offline                  PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/18 12:07:55 major       ONU Dying Gasp               PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/18 12:00:47 major       ONU Port Los                 PON 0/7 ONU 13 sn HWTCfc8948a6  LAN1 LINK DOWN
+2026/05/18 11:56:50 major       ONU Port Los                 PON 0/3 ONU 2 sn SKYWb810f2cc  LAN1 LINK DOWN
+2026/05/18 11:53:39 major       ONU Port Los                 PON 0/1 ONU 44 sn HWTC1af9db2b  LAN1 LINK DOWN
+2026/05/18 11:53:24 major       ONU Port Los                 PON 0/1 ONU 44 sn HWTC1af9db2b  LAN1 LINK DOWN
+2026/05/18 11:51:04 major       ONU Port Los                 PON 0/1 ONU 44 sn HWTC1af9db2b  LAN1 LINK DOWN
+2026/05/18 11:50:49 major       ONU Port Los                 PON 0/1 ONU 44 sn HWTC1af9db2b  LAN1 LINK DOWN
+2026/05/18 11:44:43 major       ONU Port Los                 PON 0/5 ONU 68 sn HWTCc69b2041  LAN1 LINK DOWN
+2026/05/18 11:40:39 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 11:29:20 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 11:28:25 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 11:22:26 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 11:18:16 major       ONU Online                   PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/18 11:18:16 major       ONU Port Los                 PON 0/2 ONU 45 sn HWTC47d97cb2  LAN1 LINK DOWN
+2026/05/18 11:17:31 major       ONU Offline                  PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/18 11:17:31 major       ONU Dying Gasp               PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/18 11:17:23 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 11:10:27 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 11:05:06 major       ONU Port Los                 PON 0/1 ONU 28 sn HWTC008a9bee  LAN1 LINK DOWN
+2026/05/18 10:43:35 major       ONU Online                   PON 0/1 ONU 44 sn HWTC1af9db2b 
+2026/05/18 10:43:34 major       ONU Port Los                 PON 0/1 ONU 44 sn HWTC1af9db2b  LAN1 LINK DOWN
+2026/05/18 10:42:46 major       ONU Offline                  PON 0/1 ONU 44 sn HWTC1af9db2b 
+2026/05/18 10:42:46 major       ONU Dying Gasp               PON 0/1 ONU 44 sn HWTC1af9db2b 
+2026/05/18 10:41:10 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 10:36:45 major       ONU Port Los                 PON 0/7 ONU 36 sn CDTCa6d54903  LAN2 LINK DOWN
+2026/05/18 10:27:04 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/18 10:21:01 major       ONU Port Los                 PON 0/1 ONU 28 sn HWTC008a9bee  LAN1 LINK DOWN
+2026/05/18 10:20:21 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/18 10:17:28 major       ONU Port Los                 PON 0/5 ONU 58 sn HWTCfb532d9c  LAN2 LINK DOWN
+2026/05/18 10:17:28 major       ONU Port Los                 PON 0/5 ONU 58 sn HWTCfb532d9c  LAN1 LINK DOWN
+2026/05/18 10:17:27 major       ONU Online                   PON 0/5 ONU 58 sn HWTCfb532d9c 
+2026/05/18 10:14:45 major       ONU Offline                  PON 0/5 ONU 58 sn HWTCfb532d9c 
+2026/05/18 10:14:45 major       ONU Dying Gasp               PON 0/5 ONU 58 sn HWTCfb532d9c 
+2026/05/18 10:10:32 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 09:40:33 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 09:33:27 major       ONU Port Los                 PON 0/7 ONU 18 sn HWTC1b4fee2b  LAN1 LINK DOWN
+2026/05/18 09:22:36 major       ONU Port Los                 PON 0/1 ONU 28 sn HWTC008a9bee  LAN1 LINK DOWN
+2026/05/18 09:10:55 major       ONU Online                   PON 0/1 ONU 44 sn HWTC1af9db2b 
+2026/05/18 09:10:54 major       ONU Port Los                 PON 0/1 ONU 44 sn HWTC1af9db2b  LAN1 LINK DOWN
+2026/05/18 09:10:27 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 09:09:58 major       ONU Offline                  PON 0/1 ONU 44 sn HWTC1af9db2b 
+2026/05/18 09:09:58 major       ONU Dying Gasp               PON 0/1 ONU 44 sn HWTC1af9db2b 
+2026/05/18 09:03:15 major       ONU Online                   PON 0/1 ONU 44 sn HWTC1af9db2b 
+2026/05/18 09:03:14 major       ONU Port Los                 PON 0/1 ONU 44 sn HWTC1af9db2b  LAN1 LINK DOWN
+2026/05/18 09:02:25 major       ONU Offline                  PON 0/1 ONU 44 sn HWTC1af9db2b 
+2026/05/18 09:02:25 major       ONU Dying Gasp               PON 0/1 ONU 44 sn HWTC1af9db2b 
+2026/05/18 08:40:26 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 08:22:29 major       ONU Port Los                 PON 0/3 ONU 29 sn SKYWb811360b  LAN4 LINK DOWN
+2026/05/18 08:22:29 major       ONU Port Los                 PON 0/3 ONU 29 sn SKYWb811360b  LAN3 LINK DOWN
+2026/05/18 08:22:29 major       ONU Port Los                 PON 0/3 ONU 29 sn SKYWb811360b  LAN2 LINK DOWN
+2026/05/18 08:22:29 major       ONU Port Los                 PON 0/3 ONU 29 sn SKYWb811360b  LAN1 LINK DOWN
+2026/05/18 08:22:26 major       ONU Online                   PON 0/3 ONU 29 sn SKYWb811360b 
+2026/05/18 08:15:51 major       ONU Offline                  PON 0/3 ONU 29 sn SKYWb811360b 
+2026/05/18 08:15:50 major       ONU Dying Gasp               PON 0/3 ONU 29 sn SKYWb811360b 
+2026/05/18 08:12:10 major       ONU Port Los                 PON 0/5 ONU 87 sn SKYWb80fbe6b  LAN4 LINK DOWN
+2026/05/18 08:12:10 major       ONU Port Los                 PON 0/5 ONU 87 sn SKYWb80fbe6b  LAN3 LINK DOWN
+2026/05/18 08:12:10 major       ONU Port Los                 PON 0/5 ONU 87 sn SKYWb80fbe6b  LAN2 LINK DOWN
+2026/05/18 08:12:10 major       ONU Port Los                 PON 0/5 ONU 87 sn SKYWb80fbe6b  LAN1 LINK DOWN
+2026/05/18 08:12:07 major       ONU Online                   PON 0/5 ONU 87 sn SKYWb80fbe6b 
+2026/05/18 08:11:09 major       ONU Offline                  PON 0/5 ONU 87 sn SKYWb80fbe6b 
+2026/05/18 08:11:09 major       ONU Dying Gasp               PON 0/5 ONU 87 sn SKYWb80fbe6b 
+2026/05/18 08:10:26 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 07:47:26 major       User Logout                  User admin logouted from 45.185.163.77 on web
+2026/05/18 07:41:35 major       ONU Online                   PON 0/1 ONU 30 sn CDTCa6d5578b 
+2026/05/18 07:40:32 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 07:40:25 major       ONU Offline                  PON 0/1 ONU 30 sn CDTCa6d5578b 
+2026/05/18 07:40:25 major       ONU Dying Gasp               PON 0/1 ONU 30 sn CDTCa6d5578b 
+2026/05/18 07:37:17 major       User Login                   User admin logged in from 45.185.163.77 on web
+2026/05/18 07:25:10 major       ONU Offline                  PON 0/5 ONU 85 sn HWTC1b30da2b 
+2026/05/18 07:25:10 major       ONU Dying Gasp               PON 0/5 ONU 85 sn HWTC1b30da2b 
+2026/05/18 07:20:16 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 07:00:56 major       ONU Port Los                 PON 0/7 ONU 26 sn HWTC19ea366a  LAN1 LINK DOWN
+2026/05/18 07:00:39 major       ONU Port Los                 PON 0/1 ONU 3 sn HWTC69daa373  LAN1 LINK DOWN
+2026/05/18 07:00:11 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 06:50:17 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 06:47:51 major       ONU Port Los                 PON 0/1 ONU 28 sn HWTC008a9bee  LAN1 LINK DOWN
+2026/05/18 06:21:26 major       ONU Online                   PON 0/2 ONU 37 sn HWTC71b6c374 
+2026/05/18 06:21:26 major       ONU Port Los                 PON 0/2 ONU 37 sn HWTC71b6c374  LAN1 LINK DOWN
+2026/05/18 06:20:17 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 06:18:38 major       ONU Offline                  PON 0/2 ONU 37 sn HWTC71b6c374 
+2026/05/18 06:18:38 major       ONU Dying Gasp               PON 0/2 ONU 37 sn HWTC71b6c374 
+2026/05/18 06:17:51 major       ONU Port Los                 PON 0/3 ONU 2 sn SKYWb810f2cc  LAN1 LINK DOWN
+2026/05/18 06:10:06 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 06:09:05 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 06:05:48 major       ONU Offline                  PON 0/2 ONU 27 sn HWTCd4d9162e 
+2026/05/18 06:03:06 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 06:01:34 major       ONU Port Los                 PON 0/3 ONU 16 sn HWTC7dadaa5c  LAN1 LINK DOWN
+2026/05/18 06:01:01 major       ONU Port Los                 PON 0/2 ONU 22 sn HWTCc69b0110  LAN1 LINK DOWN
+2026/05/18 06:00:45 major       ONU Port Los                 PON 0/2 ONU 22 sn HWTCc69b0110  LAN1 LINK DOWN
+2026/05/18 06:00:37 major       ONU Port Los                 PON 0/7 ONU 34 sn HWTC7ae4d88a  LAN1 LINK DOWN
+2026/05/18 06:00:26 major       ONU Online                   PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/18 06:00:26 major       ONU Port Los                 PON 0/1 ONU 34 sn HWTCf6fd4b48  LAN1 LINK DOWN
+2026/05/18 06:00:26 major       ONU Port Los                 PON 0/2 ONU 45 sn HWTC47d97cb2  LAN1 LINK DOWN
+2026/05/18 06:00:18 major       ONU Port Los                 PON 0/7 ONU 3 sn HWTCf3dd4fb2  LAN1 LINK DOWN
+2026/05/18 06:00:15 major       ONU Port Los                 PON 0/3 ONU 16 sn HWTC7dadaa5c  LAN1 LINK DOWN
+2026/05/18 05:59:32 major       ONU Offline                  PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/18 05:59:32 major       ONU Dying Gasp               PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/18 05:58:13 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 05:50:16 major       ONU Port Los                 PON 0/1 ONU 35 sn SKYWb80ffad5  LAN4 LINK DOWN
+2026/05/18 05:20:45 major       ONU Port Los                 PON 0/3 ONU 2 sn SKYWb810f2cc  LAN1 LINK DOWN
+2026/05/18 05:13:06 major       ONU Online                   PON 0/2 ONU 24 sn HWTC338fa14a 
+2026/05/18 05:13:06 major       ONU Port Los                 PON 0/2 ONU 24 sn HWTC338fa14a  LAN1 LINK DOWN
+2026/05/18 05:01:26 major       ONU Online                   PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/18 05:01:26 major       ONU Port Los                 PON 0/2 ONU 45 sn HWTC47d97cb2  LAN1 LINK DOWN
+2026/05/18 05:00:44 major       ONU Port Los                 PON 0/1 ONU 21 sn HWTCffb215a2  LAN1 LINK DOWN
+2026/05/18 05:00:42 major       ONU Offline                  PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/18 05:00:41 major       ONU Port Los                 PON 0/2 ONU 45 sn HWTC47d97cb2  LAN1 LINK DOWN
+2026/05/18 05:00:41 major       ONU Dying Gasp               PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/18 04:38:16 major       ONU Online                   PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/18 04:38:16 major       ONU Port Los                 PON 0/2 ONU 45 sn HWTC47d97cb2  LAN1 LINK DOWN
+2026/05/18 04:37:29 major       ONU Offline                  PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/18 04:37:29 major       ONU Dying Gasp               PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/18 04:24:56 major       ONU Online                   PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/18 04:24:56 major       ONU Port Los                 PON 0/2 ONU 45 sn HWTC47d97cb2  LAN1 LINK DOWN
+2026/05/18 04:24:08 major       ONU Offline                  PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/18 04:24:08 major       ONU Dying Gasp               PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/18 04:21:36 major       ONU Online                   PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/18 04:21:36 major       ONU Port Los                 PON 0/2 ONU 45 sn HWTC47d97cb2  LAN1 LINK DOWN
+2026/05/18 04:20:40 major       ONU Offline                  PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/18 04:20:40 major       ONU Dying Gasp               PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/18 04:16:16 major       ONU Online                   PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/18 04:16:16 major       ONU Port Los                 PON 0/2 ONU 45 sn HWTC47d97cb2  LAN1 LINK DOWN
+2026/05/18 04:15:33 major       ONU Offline                  PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/18 04:15:32 major       ONU Dying Gasp               PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/18 04:13:56 major       ONU Online                   PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/18 04:13:56 major       ONU Port Los                 PON 0/2 ONU 45 sn HWTC47d97cb2  LAN1 LINK DOWN
+2026/05/18 04:09:56 major       ONU Offline                  PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/18 04:09:56 major       ONU Dying Gasp               PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/18 04:00:42 major       ONU Port Los                 PON 0/7 ONU 14 sn HWTCc8bfc945  LAN1 LINK DOWN
+2026/05/18 03:14:56 major       ONU Online                   PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/18 03:14:56 major       ONU Port Los                 PON 0/2 ONU 45 sn HWTC47d97cb2  LAN1 LINK DOWN
+2026/05/18 03:14:12 major       ONU Offline                  PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/18 03:14:11 major       ONU Port Los                 PON 0/2 ONU 45 sn HWTC47d97cb2  LAN1 LINK DOWN
+2026/05/18 03:14:11 major       ONU Dying Gasp               PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/18 03:01:28 major       ONU Port Los                 PON 0/3 ONU 85 sn HWTCc8bfc404  LAN1 LINK DOWN
+2026/05/18 03:01:27 major       ONU Port Los                 PON 0/3 ONU 72 sn HWTC858adbb2  LAN1 LINK DOWN
+2026/05/18 03:01:08 major       ONU Port Los                 PON 0/5 ONU 82 sn HWTCd5f8c6b2  LAN1 LINK DOWN
+2026/05/18 03:01:08 major       ONU Port Los                 PON 0/1 ONU 18 sn HWTCfb61e65a  LAN1 LINK DOWN
+2026/05/18 03:01:05 major       ONU Port Los                 PON 0/2 ONU 48 sn HWTC1e189164  LAN1 LINK DOWN
+2026/05/18 03:01:02 major       ONU Port Los                 PON 0/3 ONU 82 sn HWTCa2cba5b2  LAN1 LINK DOWN
+2026/05/18 03:01:01 major       ONU Port Los                 PON 0/5 ONU 62 sn HWTC8faf79b2  LAN1 LINK DOWN
+2026/05/18 03:01:00 major       ONU Port Los                 PON 0/2 ONU 2 sn HWTC898fa0a6  LAN1 LINK DOWN
+2026/05/18 03:00:58 major       ONU Port Los                 PON 0/2 ONU 14 sn HWTC2fdb8917  LAN1 LINK DOWN
+2026/05/18 03:00:57 major       ONU Port Los                 PON 0/5 ONU 44 sn HWTCc8bfc19e  LAN1 LINK DOWN
+2026/05/18 03:00:54 major       ONU Port Los                 PON 0/7 ONU 25 sn HWTC396ee57d  LAN1 LINK DOWN
+2026/05/18 03:00:53 major       ONU Port Los                 PON 0/7 ONU 11 sn HWTC72b3cf74  LAN1 LINK DOWN
+2026/05/18 03:00:53 major       ONU Port Los                 PON 0/5 ONU 82 sn HWTCd5f8c6b2  LAN1 LINK DOWN
+2026/05/18 03:00:53 major       ONU Port Los                 PON 0/1 ONU 18 sn HWTCfb61e65a  LAN1 LINK DOWN
+2026/05/18 03:00:50 major       ONU Port Los                 PON 0/3 ONU 81 sn HWTCd6bcb69c  LAN1 LINK DOWN
+2026/05/18 03:00:46 major       ONU Port Los                 PON 0/7 ONU 32 sn HWTCc8bfc3b8  LAN1 LINK DOWN
+2026/05/18 03:00:44 major       ONU Port Los                 PON 0/1 ONU 36 sn HWTC9edfdfa2  LAN1 LINK DOWN
+2026/05/18 03:00:42 major       ONU Port Los                 PON 0/5 ONU 44 sn HWTCc8bfc19e  LAN1 LINK DOWN
+2026/05/18 03:00:41 major       ONU Port Los                 PON 0/3 ONU 30 sn HWTCc8bfc964  LAN1 LINK DOWN
+2026/05/18 03:00:41 major       ONU Port Los                 PON 0/5 ONU 55 sn HWTC6862be8a  LAN1 LINK DOWN
+2026/05/18 03:00:39 major       ONU Port Los                 PON 0/7 ONU 11 sn HWTC72b3cf74  LAN1 LINK DOWN
+2026/05/18 03:00:38 major       ONU Port Los                 PON 0/7 ONU 25 sn HWTC396ee57d  LAN1 LINK DOWN
+2026/05/18 03:00:25 major       ONU Port Los                 PON 0/2 ONU 27 sn HWTCd4d9162e  LAN1 LINK DOWN
+2026/05/18 03:00:24 major       ONU Port Los                 PON 0/1 ONU 16 sn HWTCf17c76b2  LAN1 LINK DOWN
+2026/05/18 03:00:22 major       ONU Port Los                 PON 0/3 ONU 72 sn HWTC858adbb2  LAN1 LINK DOWN
+2026/05/18 03:00:13 major       ONU Port Los                 PON 0/3 ONU 85 sn HWTCc8bfc404  LAN1 LINK DOWN
+2026/05/18 03:00:07 major       ONU Port Los                 PON 0/3 ONU 72 sn HWTC858adbb2  LAN1 LINK DOWN
+2026/05/18 02:50:15 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 02:44:06 major       ONU Online                   PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/18 02:44:06 major       ONU Port Los                 PON 0/2 ONU 45 sn HWTC47d97cb2  LAN1 LINK DOWN
+2026/05/18 02:41:48 major       ONU Offline                  PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/18 02:41:47 major       ONU Dying Gasp               PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/18 02:40:36 major       ONU Online                   PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/18 02:40:36 major       ONU Port Los                 PON 0/2 ONU 45 sn HWTC47d97cb2  LAN1 LINK DOWN
+2026/05/18 02:39:50 major       ONU Offline                  PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/18 02:39:50 major       ONU Dying Gasp               PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/18 02:32:24 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 02:25:28 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 02:20:38 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/18 02:05:46 major       ONU Online                   PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/18 02:05:46 major       ONU Port Los                 PON 0/2 ONU 45 sn HWTC47d97cb2  LAN1 LINK DOWN
+2026/05/18 02:04:49 major       ONU Offline                  PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/18 02:04:49 major       ONU Dying Gasp               PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/18 01:41:26 major       ONU Online                   PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/18 01:41:26 major       ONU Port Los                 PON 0/2 ONU 45 sn HWTC47d97cb2  LAN1 LINK DOWN
+2026/05/18 01:40:41 major       ONU Offline                  PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/18 01:40:41 major       ONU Dying Gasp               PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/18 01:01:33 major       ONU Port Los                 PON 0/5 ONU 71 sn HWTC8c7fea9d  LAN2 LINK DOWN
+2026/05/18 01:01:30 major       ONU Port Los                 PON 0/1 ONU 40 sn HWTC611f699b  LAN1 LINK DOWN
+2026/05/18 01:01:25 major       ONU Port Los                 PON 0/7 ONU 28 sn HWTCc8bfc3ba  LAN1 LINK DOWN
+2026/05/18 01:01:19 major       ONU Port Los                 PON 0/1 ONU 13 sn HWTCaa17db45  LAN1 LINK DOWN
+2026/05/18 01:01:15 major       ONU Port Los                 PON 0/2 ONU 15 sn HWTC417d39a1  LAN1 LINK DOWN
+2026/05/18 01:01:13 major       ONU Port Los                 PON 0/5 ONU 75 sn HWTC8a68559d  LAN1 LINK DOWN
+2026/05/18 01:01:11 major       ONU Port Los                 PON 0/7 ONU 7 sn HWTCf3ae562a  LAN1 LINK DOWN
+2026/05/18 01:01:05 major       ONU Port Los                 PON 0/2 ONU 15 sn HWTC417d39a1  LAN1 LINK DOWN
+2026/05/18 01:00:59 major       ONU Port Los                 PON 0/3 ONU 66 sn HWTCfb6ef79c  LAN1 LINK DOWN
+2026/05/18 01:00:45 major       ONU Port Los                 PON 0/5 ONU 76 sn HWTCc8bfc18f  LAN1 LINK DOWN
+2026/05/18 01:00:42 major       ONU Port Los                 PON 0/7 ONU 2 sn HWTC55dd094a  LAN1 LINK DOWN
+2026/05/18 01:00:35 major       ONU Port Los                 PON 0/5 ONU 76 sn HWTCc8bfc18f  LAN1 LINK DOWN
+2026/05/18 01:00:32 major       ONU Port Los                 PON 0/7 ONU 2 sn HWTC55dd094a  LAN1 LINK DOWN
+2026/05/18 01:00:26 major       ONU Port Los                 PON 0/1 ONU 19 sn HWTCc8bfc8c0  LAN1 LINK DOWN
+2026/05/18 00:57:28 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/18 00:56:46 major       ONU Online                   PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/18 00:56:46 major       ONU Port Los                 PON 0/2 ONU 45 sn HWTC47d97cb2  LAN1 LINK DOWN
+2026/05/18 00:56:01 major       ONU Offline                  PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/18 00:56:01 major       ONU Port Los                 PON 0/2 ONU 45 sn HWTC47d97cb2  LAN1 LINK DOWN
+2026/05/18 00:56:00 major       ONU Dying Gasp               PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/18 00:53:26 major       ONU Port Los                 PON 0/3 ONU 2 sn SKYWb810f2cc  LAN1 LINK DOWN
+2026/05/18 00:16:53 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/18 00:06:13 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 23:55:45 major       ONU Port Los                 PON 0/2 ONU 50 sn SKYWb8112d36  LAN4 LINK DOWN
+2026/05/17 23:29:58 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN1 LINK DOWN
+2026/05/17 23:25:51 major       ONU Port Los                 PON 0/1 ONU 25 sn SKYWb8111543  LAN4 LINK DOWN
+2026/05/17 23:25:51 major       ONU Port Los                 PON 0/1 ONU 25 sn SKYWb8111543  LAN3 LINK DOWN
+2026/05/17 23:25:51 major       ONU Port Los                 PON 0/1 ONU 25 sn SKYWb8111543  LAN2 LINK DOWN
+2026/05/17 23:25:51 major       ONU Port Los                 PON 0/1 ONU 25 sn SKYWb8111543  LAN1 LINK DOWN
+2026/05/17 23:25:47 major       ONU Port Los                 PON 0/1 ONU 25 sn SKYWb8111543  LAN4 LINK DOWN
+2026/05/17 23:25:47 major       ONU Port Los                 PON 0/1 ONU 25 sn SKYWb8111543  LAN3 LINK DOWN
+2026/05/17 23:25:47 major       ONU Port Los                 PON 0/1 ONU 25 sn SKYWb8111543  LAN2 LINK DOWN
+2026/05/17 23:25:47 major       ONU Port Los                 PON 0/1 ONU 25 sn SKYWb8111543  LAN1 LINK DOWN
+2026/05/17 23:25:43 major       ONU Online                   PON 0/1 ONU 25 sn SKYWb8111543 
+2026/05/17 23:25:05 major       ONU Offline                  PON 0/1 ONU 25 sn SKYWb8111543 
+2026/05/17 23:25:05 major       ONU Dying Gasp               PON 0/1 ONU 25 sn SKYWb8111543 
+2026/05/17 23:20:52 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 23:07:17 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 23:03:17 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 23:00:56 major       ONU Port Los                 PON 0/1 ONU 35 sn SKYWb80ffad5  LAN4 LINK DOWN
+2026/05/17 23:00:11 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 22:58:19 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 22:58:04 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 22:51:06 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 22:51:00 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 22:45:44 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 22:38:40 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 22:36:05 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 22:32:24 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 22:31:17 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 22:29:03 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 22:20:17 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/17 22:19:41 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/17 22:19:33 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 22:15:08 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 22:13:25 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 22:13:09 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 22:12:18 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 22:09:24 major       ONU Port Los                 PON 0/7 ONU 36 sn CDTCa6d54903  LAN2 LINK DOWN
+2026/05/17 21:56:26 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 21:50:13 major       ONU Port Los                 PON 0/3 ONU 74 sn SKYWb8111efe  LAN4 LINK DOWN
+2026/05/17 21:40:47 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 21:17:07 major       ONU Offline                  PON 0/2 ONU 24 sn HWTC338fa14a 
+2026/05/17 21:17:07 major       ONU Dying Gasp               PON 0/2 ONU 24 sn HWTC338fa14a 
+2026/05/17 21:14:42 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 21:05:36 major       ONU Online                   PON 0/2 ONU 46 sn HWTCa4a74168 
+2026/05/17 21:05:36 major       ONU Port Los                 PON 0/2 ONU 46 sn HWTCa4a74168  LAN1 LINK DOWN
+2026/05/17 21:04:28 major       ONU Offline                  PON 0/2 ONU 46 sn HWTCa4a74168 
+2026/05/17 21:04:28 major       ONU Dying Gasp               PON 0/2 ONU 46 sn HWTCa4a74168 
+2026/05/17 20:47:56 major       ONU Port Los                 PON 0/7 ONU 13 sn HWTCfc8948a6  LAN1 LINK DOWN
+2026/05/17 20:21:28 major       ONU Online                   PON 0/3 ONU 34 sn HWTCe3fc67b2 
+2026/05/17 20:21:27 major       ONU Port Los                 PON 0/3 ONU 34 sn HWTCe3fc67b2  LAN1 LINK DOWN
+2026/05/17 19:59:43 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 19:58:37 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 19:11:48 major       ONU Port Los                 PON 0/1 ONU 15 sn SKYWb8102c4f  LAN4 LINK DOWN
+2026/05/17 19:11:48 major       ONU Port Los                 PON 0/1 ONU 15 sn SKYWb8102c4f  LAN3 LINK DOWN
+2026/05/17 19:11:48 major       ONU Port Los                 PON 0/1 ONU 15 sn SKYWb8102c4f  LAN2 LINK DOWN
+2026/05/17 19:11:48 major       ONU Port Los                 PON 0/1 ONU 15 sn SKYWb8102c4f  LAN1 LINK DOWN
+2026/05/17 19:11:46 major       ONU Port Los                 PON 0/1 ONU 15 sn SKYWb8102c4f  LAN4 LINK DOWN
+2026/05/17 19:11:46 major       ONU Port Los                 PON 0/1 ONU 15 sn SKYWb8102c4f  LAN3 LINK DOWN
+2026/05/17 19:11:46 major       ONU Port Los                 PON 0/1 ONU 15 sn SKYWb8102c4f  LAN2 LINK DOWN
+2026/05/17 19:11:46 major       ONU Port Los                 PON 0/1 ONU 15 sn SKYWb8102c4f  LAN1 LINK DOWN
+2026/05/17 19:11:43 major       ONU Online                   PON 0/1 ONU 15 sn SKYWb8102c4f 
+2026/05/17 19:10:56 major       ONU Offline                  PON 0/1 ONU 15 sn SKYWb8102c4f 
+2026/05/17 19:10:56 major       ONU Dying Gasp               PON 0/1 ONU 15 sn SKYWb8102c4f 
+2026/05/17 19:10:39 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 19:09:30 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 19:01:32 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 19:00:40 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 18:59:10 major       ONU Dying Gasp               PON 0/1 ONU 25 sn SKYWb8111543 
+2026/05/17 18:52:46 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 18:51:30 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 18:48:37 major       ONU Port Los                 PON 0/1 ONU 25 sn SKYWb8111543  LAN4 LINK DOWN
+2026/05/17 18:48:37 major       ONU Port Los                 PON 0/1 ONU 25 sn SKYWb8111543  LAN3 LINK DOWN
+2026/05/17 18:48:37 major       ONU Port Los                 PON 0/1 ONU 25 sn SKYWb8111543  LAN2 LINK DOWN
+2026/05/17 18:48:37 major       ONU Port Los                 PON 0/1 ONU 25 sn SKYWb8111543  LAN1 LINK DOWN
+2026/05/17 18:48:33 major       ONU Online                   PON 0/1 ONU 25 sn SKYWb8111543 
+2026/05/17 18:47:51 major       ONU Offline                  PON 0/1 ONU 25 sn SKYWb8111543 
+2026/05/17 18:47:51 major       ONU Dying Gasp               PON 0/1 ONU 25 sn SKYWb8111543 
+2026/05/17 18:46:42 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 18:32:27 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 18:31:14 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 18:30:09 major       ONU Port Los                 PON 0/1 ONU 25 sn SKYWb8111543  LAN4 LINK DOWN
+2026/05/17 18:30:09 major       ONU Port Los                 PON 0/1 ONU 25 sn SKYWb8111543  LAN3 LINK DOWN
+2026/05/17 18:30:09 major       ONU Port Los                 PON 0/1 ONU 25 sn SKYWb8111543  LAN2 LINK DOWN
+2026/05/17 18:30:09 major       ONU Port Los                 PON 0/1 ONU 25 sn SKYWb8111543  LAN1 LINK DOWN
+2026/05/17 18:30:07 major       ONU Port Los                 PON 0/1 ONU 25 sn SKYWb8111543  LAN4 LINK DOWN
+2026/05/17 18:30:07 major       ONU Port Los                 PON 0/1 ONU 25 sn SKYWb8111543  LAN3 LINK DOWN
+2026/05/17 18:30:07 major       ONU Port Los                 PON 0/1 ONU 25 sn SKYWb8111543  LAN2 LINK DOWN
+2026/05/17 18:30:07 major       ONU Port Los                 PON 0/1 ONU 25 sn SKYWb8111543  LAN1 LINK DOWN
+2026/05/17 18:30:03 major       ONU Online                   PON 0/1 ONU 25 sn SKYWb8111543 
+2026/05/17 18:29:38 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 18:29:23 major       ONU Offline                  PON 0/1 ONU 25 sn SKYWb8111543 
+2026/05/17 18:29:23 major       ONU Dying Gasp               PON 0/1 ONU 25 sn SKYWb8111543 
+2026/05/17 18:27:26 major       ONU Online                   PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/17 18:27:26 major       ONU Port Los                 PON 0/2 ONU 45 sn HWTC47d97cb2  LAN1 LINK DOWN
+2026/05/17 18:26:16 major       ONU Offline                  PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/17 18:26:16 major       ONU Dying Gasp               PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/17 18:24:50 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 18:23:43 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 18:23:34 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 18:23:18 major       ONU Online                   PON 0/3 ONU 63 sn HWTC1b02492b 
+2026/05/17 18:23:17 major       ONU Port Los                 PON 0/3 ONU 63 sn HWTC1b02492b  LAN1 LINK DOWN
+2026/05/17 18:22:30 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 18:21:58 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 18:18:51 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/17 18:16:20 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 18:16:06 major       ONU Port Los                 PON 0/1 ONU 15 sn SKYWb8102c4f  LAN4 LINK DOWN
+2026/05/17 18:16:06 major       ONU Port Los                 PON 0/1 ONU 15 sn SKYWb8102c4f  LAN3 LINK DOWN
+2026/05/17 18:16:06 major       ONU Port Los                 PON 0/1 ONU 15 sn SKYWb8102c4f  LAN2 LINK DOWN
+2026/05/17 18:16:06 major       ONU Port Los                 PON 0/1 ONU 15 sn SKYWb8102c4f  LAN1 LINK DOWN
+2026/05/17 18:16:03 major       ONU Online                   PON 0/1 ONU 15 sn SKYWb8102c4f 
+2026/05/17 18:15:03 major       ONU Offline                  PON 0/1 ONU 15 sn SKYWb8102c4f 
+2026/05/17 18:15:03 major       ONU Dying Gasp               PON 0/1 ONU 15 sn SKYWb8102c4f 
+2026/05/17 18:14:59 major       ONU Port Los                 PON 0/3 ONU 21 sn HWTC236fc8a2  LAN1 LINK DOWN
+2026/05/17 18:14:44 major       ONU Port Los                 PON 0/3 ONU 21 sn HWTC236fc8a2  LAN1 LINK DOWN
+2026/05/17 18:13:51 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 18:13:01 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 18:08:32 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 18:08:19 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 18:05:28 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 18:02:11 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 18:01:45 major       ONU Offline                  PON 0/3 ONU 63 sn HWTC1b02492b 
+2026/05/17 18:01:45 major       ONU Dying Gasp               PON 0/3 ONU 63 sn HWTC1b02492b 
+2026/05/17 18:00:44 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 17:58:47 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 17:56:52 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 17:51:51 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 17:49:35 major       System Time Change           config rtc success.
+2026/05/17 17:49:31 major       System Time Change           change by ntp.
+2026/05/17 17:47:39 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 17:39:36 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 17:36:41 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 17:36:12 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 17:34:12 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 17:31:25 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 17:29:49 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 17:29:28 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 17:29:14 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 17:28:57 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 17:27:17 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 17:24:25 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 17:22:37 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 17:21:51 major       ONU Online                   PON 0/1 ONU 42 sn HWTC173261a2 
+2026/05/17 17:21:51 major       ONU Port Los                 PON 0/1 ONU 42 sn HWTC173261a2  LAN1 LINK DOWN
+2026/05/17 17:21:30 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 17:21:01 major       ONU Offline                  PON 0/1 ONU 42 sn HWTC173261a2 
+2026/05/17 17:21:01 major       ONU Dying Gasp               PON 0/1 ONU 42 sn HWTC173261a2 
+2026/05/17 17:20:23 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 17:18:39 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 17:17:48 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 17:14:11 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 17:09:56 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 17:09:38 major       ONU Port Los                 PON 0/5 ONU 87 sn SKYWb80fbe6b  LAN4 LINK DOWN
+2026/05/17 17:09:38 major       ONU Port Los                 PON 0/5 ONU 87 sn SKYWb80fbe6b  LAN3 LINK DOWN
+2026/05/17 17:09:38 major       ONU Port Los                 PON 0/5 ONU 87 sn SKYWb80fbe6b  LAN2 LINK DOWN
+2026/05/17 17:09:38 major       ONU Port Los                 PON 0/5 ONU 87 sn SKYWb80fbe6b  LAN1 LINK DOWN
+2026/05/17 17:09:38 major       ONU Port Los                 PON 0/5 ONU 27 sn SKYWb8113602  LAN4 LINK DOWN
+2026/05/17 17:09:38 major       ONU Port Los                 PON 0/5 ONU 27 sn SKYWb8113602  LAN3 LINK DOWN
+2026/05/17 17:09:38 major       ONU Port Los                 PON 0/5 ONU 27 sn SKYWb8113602  LAN2 LINK DOWN
+2026/05/17 17:09:38 major       ONU Port Los                 PON 0/5 ONU 27 sn SKYWb8113602  LAN1 LINK DOWN
+2026/05/17 17:09:31 major       ONU Port Los                 PON 0/5 ONU 73 sn HWTCc691004a  LAN1 LINK DOWN
+2026/05/17 17:09:29 major       ONU Online                   PON 0/5 ONU 73 sn HWTCc691004a 
+2026/05/17 17:09:27 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 17:09:26 major       ONU Online                   PON 0/5 ONU 87 sn SKYWb80fbe6b 
+2026/05/17 17:09:26 major       ONU Port Los                 PON 0/5 ONU 60 sn HWTC1b1b042b  LAN1 LINK DOWN
+2026/05/17 17:09:25 major       ONU Online                   PON 0/5 ONU 27 sn SKYWb8113602 
+2026/05/17 17:09:25 major       ONU Port Los                 PON 0/5 ONU 68 sn HWTCc69b2041  LAN1 LINK DOWN
+2026/05/17 17:09:25 major       ONU Port Los                 PON 0/5 ONU 63 sn HWTCc6932a6f  LAN1 LINK DOWN
+2026/05/17 17:09:24 major       ONU Online                   PON 0/5 ONU 60 sn HWTC1b1b042b 
+2026/05/17 17:09:24 major       ONU Online                   PON 0/5 ONU 68 sn HWTCc69b2041 
+2026/05/17 17:09:23 major       ONU Online                   PON 0/5 ONU 63 sn HWTCc6932a6f 
+2026/05/17 17:09:20 major       ONU Online                   PON 0/4 ONU 27 sn HWTC40336c3d 
+2026/05/17 17:09:19 major       ONU Port Los                 PON 0/4 ONU 27 sn HWTC40336c3d  LAN1 LINK DOWN
+2026/05/17 17:09:10 major       ONU Port Los                 PON 0/5 ONU 85 sn HWTC1b30da2b  LAN1 LINK DOWN
+2026/05/17 17:09:10 major       ONU Port Los                 PON 0/5 ONU 82 sn HWTCd5f8c6b2  LAN1 LINK DOWN
+2026/05/17 17:09:10 major       ONU Port Los                 PON 0/5 ONU 67 sn HWTC8b2242b2  LAN1 LINK DOWN
+2026/05/17 17:09:10 major       ONU Port Los                 PON 0/5 ONU 64 sn HWTC71bad5b2  LAN1 LINK DOWN
+2026/05/17 17:09:09 major       ONU Online                   PON 0/5 ONU 85 sn HWTC1b30da2b 
+2026/05/17 17:09:09 major       ONU Online                   PON 0/5 ONU 82 sn HWTCd5f8c6b2 
+2026/05/17 17:09:08 major       ONU Online                   PON 0/5 ONU 67 sn HWTC8b2242b2 
+2026/05/17 17:09:08 major       ONU Online                   PON 0/5 ONU 64 sn HWTC71bad5b2 
+2026/05/17 17:09:07 major       ONU Online                   PON 0/5 ONU 77 sn HWTCe37d0c8a 
+2026/05/17 17:09:07 major       ONU Online                   PON 0/5 ONU 65 sn HWTC2c421da2 
+2026/05/17 17:09:06 major       ONU Online                   PON 0/4 ONU 34 sn HWTC182918a2 
+2026/05/17 17:09:05 major       ONU Port Los                 PON 0/5 ONU 65 sn HWTC2c421da2  LAN1 LINK DOWN
+2026/05/17 17:09:05 major       ONU Online                   PON 0/4 ONU 29 sn HWTCe34361b2 
+2026/05/17 17:09:04 major       ONU Port Los                 PON 0/4 ONU 34 sn HWTC182918a2  LAN1 LINK DOWN
+2026/05/17 17:09:04 major       ONU Online                   PON 0/4 ONU 25 sn HWTC0f61409b 
+2026/05/17 17:09:04 major       ONU Port Los                 PON 0/4 ONU 29 sn HWTCe34361b2  LAN1 LINK DOWN
+2026/05/17 17:09:04 major       ONU Port Los                 PON 0/4 ONU 25 sn HWTC0f61409b  LAN1 LINK DOWN
+2026/05/17 17:07:43 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 17:05:20 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 17:04:45 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 17:04:09 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 17:03:38 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 16:58:21 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 16:57:33 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 16:55:52 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 16:51:46 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 16:49:49 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 16:49:34 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 16:48:28 major       ONU Offline                  PON 0/5 ONU 82 sn HWTCd5f8c6b2 
+2026/05/17 16:48:28 major       ONU Offline                  PON 0/5 ONU 64 sn HWTC71bad5b2 
+2026/05/17 16:48:28 major       ONU Offline                  PON 0/4 ONU 29 sn HWTCe34361b2 
+2026/05/17 16:48:28 major       ONU Offline                  PON 0/5 ONU 60 sn HWTC1b1b042b 
+2026/05/17 16:48:28 major       ONU Offline                  PON 0/5 ONU 77 sn HWTCe37d0c8a 
+2026/05/17 16:48:28 major       ONU Offline                  PON 0/5 ONU 85 sn HWTC1b30da2b 
+2026/05/17 16:48:28 major       ONU Offline                  PON 0/5 ONU 67 sn HWTC8b2242b2 
+2026/05/17 16:48:28 major       ONU Offline                  PON 0/4 ONU 25 sn HWTC0f61409b 
+2026/05/17 16:48:28 major       ONU Offline                  PON 0/4 ONU 34 sn HWTC182918a2 
+2026/05/17 16:48:28 major       ONU Offline                  PON 0/5 ONU 65 sn HWTC2c421da2 
+2026/05/17 16:48:28 major       ONU Offline                  PON 0/5 ONU 87 sn SKYWb80fbe6b 
+2026/05/17 16:48:28 major       ONU Offline                  PON 0/4 ONU 27 sn HWTC40336c3d 
+2026/05/17 16:48:28 major       ONU Offline                  PON 0/5 ONU 27 sn SKYWb8113602 
+2026/05/17 16:48:28 major       ONU Dying Gasp               PON 0/5 ONU 82 sn HWTCd5f8c6b2 
+2026/05/17 16:48:28 major       ONU Offline                  PON 0/5 ONU 73 sn HWTCc691004a 
+2026/05/17 16:48:28 major       ONU Offline                  PON 0/5 ONU 63 sn HWTCc6932a6f 
+2026/05/17 16:48:28 major       ONU Offline                  PON 0/5 ONU 68 sn HWTCc69b2041 
+2026/05/17 16:48:28 major       ONU Dying Gasp               PON 0/5 ONU 64 sn HWTC71bad5b2 
+2026/05/17 16:48:28 major       ONU Dying Gasp               PON 0/4 ONU 29 sn HWTCe34361b2 
+2026/05/17 16:48:28 major       ONU Dying Gasp               PON 0/5 ONU 60 sn HWTC1b1b042b 
+2026/05/17 16:48:28 major       ONU Dying Gasp               PON 0/5 ONU 77 sn HWTCe37d0c8a 
+2026/05/17 16:48:28 major       ONU Dying Gasp               PON 0/5 ONU 85 sn HWTC1b30da2b 
+2026/05/17 16:48:28 major       ONU Dying Gasp               PON 0/5 ONU 67 sn HWTC8b2242b2 
+2026/05/17 16:48:28 major       ONU Dying Gasp               PON 0/4 ONU 25 sn HWTC0f61409b 
+2026/05/17 16:48:28 major       ONU Dying Gasp               PON 0/4 ONU 34 sn HWTC182918a2 
+2026/05/17 16:48:28 major       ONU Dying Gasp               PON 0/5 ONU 65 sn HWTC2c421da2 
+2026/05/17 16:48:28 major       ONU Dying Gasp               PON 0/4 ONU 27 sn HWTC40336c3d 
+2026/05/17 16:48:28 major       ONU Dying Gasp               PON 0/5 ONU 87 sn SKYWb80fbe6b 
+2026/05/17 16:48:28 major       ONU Dying Gasp               PON 0/5 ONU 27 sn SKYWb8113602 
+2026/05/17 16:48:28 major       ONU Dying Gasp               PON 0/5 ONU 73 sn HWTCc691004a 
+2026/05/17 16:48:28 major       ONU Dying Gasp               PON 0/5 ONU 63 sn HWTCc6932a6f 
+2026/05/17 16:48:28 major       ONU Dying Gasp               PON 0/5 ONU 68 sn HWTCc69b2041 
+2026/05/17 16:48:15 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 16:47:58 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 16:45:31 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 16:44:10 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 16:41:52 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 16:40:14 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 16:35:44 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 16:35:23 major       ONU Port Los                 PON 0/1 ONU 25 sn SKYWb8111543  LAN4 LINK DOWN
+2026/05/17 16:35:23 major       ONU Port Los                 PON 0/1 ONU 25 sn SKYWb8111543  LAN3 LINK DOWN
+2026/05/17 16:35:23 major       ONU Port Los                 PON 0/1 ONU 25 sn SKYWb8111543  LAN2 LINK DOWN
+2026/05/17 16:35:23 major       ONU Port Los                 PON 0/1 ONU 25 sn SKYWb8111543  LAN1 LINK DOWN
+2026/05/17 16:35:20 major       ONU Online                   PON 0/1 ONU 25 sn SKYWb8111543 
+2026/05/17 16:34:37 major       ONU Offline                  PON 0/1 ONU 25 sn SKYWb8111543 
+2026/05/17 16:34:36 major       ONU Dying Gasp               PON 0/1 ONU 25 sn SKYWb8111543 
+2026/05/17 16:27:31 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 16:27:17 major       ONU Port Los                 PON 0/2 ONU 46 sn HWTCa4a74168  LAN1 LINK DOWN
+2026/05/17 16:27:17 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 16:26:44 major       ONU Online                   PON 0/3 ONU 83 sn HWTCf0bdb55a 
+2026/05/17 16:26:44 major       ONU Port Los                 PON 0/3 ONU 83 sn HWTCf0bdb55a  LAN1 LINK DOWN
+2026/05/17 16:24:04 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 16:20:52 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 16:19:31 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 16:19:18 major       ONU Offline                  PON 0/3 ONU 83 sn HWTCf0bdb55a 
+2026/05/17 16:19:18 major       ONU Dying Gasp               PON 0/3 ONU 83 sn HWTCf0bdb55a 
+2026/05/17 16:18:24 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 16:17:33 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/17 16:17:11 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 16:16:33 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 16:16:10 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 16:15:41 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 16:07:34 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 16:06:50 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 16:06:37 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 16:06:29 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 16:04:13 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 16:03:44 major       ONU Online                   PON 0/3 ONU 83 sn HWTCf0bdb55a 
+2026/05/17 16:03:44 major       ONU Port Los                 PON 0/3 ONU 83 sn HWTCf0bdb55a  LAN1 LINK DOWN
+2026/05/17 16:03:23 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 16:03:01 major       ONU Offline                  PON 0/3 ONU 83 sn HWTCf0bdb55a 
+2026/05/17 16:03:01 major       ONU Dying Gasp               PON 0/3 ONU 83 sn HWTCf0bdb55a 
+2026/05/17 16:02:35 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 16:01:14 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 15:58:04 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 15:56:13 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 15:54:29 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 15:54:02 major       ONU Dying Gasp               PON 0/1 ONU 25 sn SKYWb8111543 
+2026/05/17 15:52:02 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 15:51:16 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 15:50:53 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 15:49:34 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 15:47:33 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/17 15:46:40 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 15:46:28 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 15:45:19 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 15:45:11 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 15:44:43 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/17 15:43:53 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 15:43:49 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/17 15:43:45 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 15:41:42 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 15:41:04 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 15:40:43 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 15:40:19 major       ONU Online                   PON 0/7 ONU 18 sn HWTC1b4fee2b 
+2026/05/17 15:40:19 major       ONU Port Los                 PON 0/7 ONU 18 sn HWTC1b4fee2b  LAN1 LINK DOWN
+2026/05/17 15:39:43 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 15:39:35 major       ONU Offline                  PON 0/7 ONU 18 sn HWTC1b4fee2b 
+2026/05/17 15:39:35 major       ONU Dying Gasp               PON 0/7 ONU 18 sn HWTC1b4fee2b 
+2026/05/17 15:39:10 major       ONU Port Los                 PON 0/2 ONU 43 sn SKYWb8112d68  LAN1 LINK DOWN
+2026/05/17 15:37:44 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/17 15:37:31 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 15:37:03 major       ONU Online                   PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/17 15:37:02 major       ONU Port Los                 PON 0/2 ONU 45 sn HWTC47d97cb2  LAN1 LINK DOWN
+2026/05/17 15:36:47 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 15:36:22 major       ONU Offline                  PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/17 15:36:20 major       ONU Dying Gasp               PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/17 15:35:32 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 15:33:16 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 15:32:50 major       ONU Port Los                 PON 0/3 ONU 60 sn SKYWb810f469  LAN1 LINK DOWN
+2026/05/17 15:32:43 major       ONU Online                   PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/17 15:32:42 major       ONU Port Los                 PON 0/2 ONU 45 sn HWTC47d97cb2  LAN1 LINK DOWN
+2026/05/17 15:32:00 major       ONU Offline                  PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/17 15:31:59 major       ONU Dying Gasp               PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/17 15:31:43 major       ONU Online                   PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/17 15:31:42 major       ONU Port Los                 PON 0/2 ONU 45 sn HWTC47d97cb2  LAN1 LINK DOWN
+2026/05/17 15:31:11 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 15:31:00 major       ONU Offline                  PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/17 15:30:59 major       ONU Dying Gasp               PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/17 15:30:44 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 15:29:37 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 15:29:14 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 15:28:53 major       ONU Online                   PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/17 15:28:52 major       ONU Port Los                 PON 0/2 ONU 45 sn HWTC47d97cb2  LAN1 LINK DOWN
+2026/05/17 15:28:07 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 15:28:05 major       ONU Offline                  PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/17 15:28:05 major       ONU Dying Gasp               PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/17 15:25:32 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 15:24:19 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 15:23:27 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 15:22:20 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 15:21:03 major       ONU Online                   PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/17 15:21:02 major       ONU Port Los                 PON 0/2 ONU 45 sn HWTC47d97cb2  LAN1 LINK DOWN
+2026/05/17 15:20:19 major       ONU Offline                  PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/17 15:20:19 major       ONU Dying Gasp               PON 0/2 ONU 45 sn HWTC47d97cb2 
+2026/05/17 15:19:20 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 15:17:57 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 15:16:46 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 15:16:10 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 15:15:20 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 15:13:48 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 15:13:19 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 15:11:59 major       ONU Online                   PON 0/7 ONU 36 sn CDTCa6d54903 
+2026/05/17 15:10:36 major       ONU Offline                  PON 0/7 ONU 36 sn CDTCa6d54903 
+2026/05/17 15:10:36 major       ONU Dying Gasp               PON 0/7 ONU 36 sn CDTCa6d54903 
+2026/05/17 15:10:13 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 15:08:14 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 15:06:46 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 15:06:31 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 15:06:02 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 15:05:24 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 15:05:14 major       ONU Online                   PON 0/3 ONU 80 sn HWTC19e51ea1 
+2026/05/17 15:05:14 major       ONU Port Los                 PON 0/3 ONU 80 sn HWTC19e51ea1  LAN1 LINK DOWN
+2026/05/17 15:04:24 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 15:04:03 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 15:00:13 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 14:58:16 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 14:56:17 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 14:54:49 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 14:54:41 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 14:48:44 major       ONU Port Los                 PON 0/3 ONU 28 sn HWTC652d0c1f  LAN1 LINK DOWN
+2026/05/17 14:48:42 major       ONU Online                   PON 0/3 ONU 28 sn HWTC652d0c1f 
+2026/05/17 14:48:27 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 14:45:19 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 14:43:14 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 14:41:31 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 14:40:41 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 14:40:12 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 14:38:44 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 14:38:29 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 14:37:08 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 14:35:16 major       ONU Offline                  PON 0/3 ONU 28 sn HWTC652d0c1f 
+2026/05/17 14:35:16 major       ONU Dying Gasp               PON 0/3 ONU 28 sn HWTC652d0c1f 
+2026/05/17 14:34:16 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 14:33:24 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 14:31:58 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 14:30:41 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 14:26:57 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN1 LINK DOWN
+2026/05/17 14:26:28 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 14:26:12 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN1 LINK DOWN
+2026/05/17 14:26:07 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 14:25:33 major       ONU Port Los                 PON 0/7 ONU 18 sn HWTC1b4fee2b  LAN1 LINK DOWN
+2026/05/17 14:23:49 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 14:21:54 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 14:19:47 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 14:19:34 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 14:18:57 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 14:18:25 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 14:15:36 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 14:12:53 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 14:11:49 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 14:09:20 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 14:07:21 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 14:06:46 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 14:06:37 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 14:01:51 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 13:58:26 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 13:57:40 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 13:57:11 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 13:55:58 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 13:54:36 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 13:54:22 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 13:52:21 major       ONU Port Los                 PON 0/7 ONU 36 sn CDTCa6d54903  LAN2 LINK DOWN
+2026/05/17 13:50:40 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 13:44:45 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 13:44:14 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 13:43:22 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 13:43:03 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 13:42:11 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 13:42:02 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 13:41:12 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 13:40:05 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 13:39:44 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 13:38:40 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 13:38:04 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 13:36:53 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 13:35:42 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 13:30:06 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 13:29:43 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 13:28:15 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 13:27:04 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 13:25:42 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 13:25:11 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 13:22:16 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+2026/05/17 13:18:53 major       ONU Port Los                 PON 0/2 ONU 5 sn SKYWb81103ed  LAN3 LINK DOWN
+gpon-olt-Estero-Medio(config)# show schedule
+% Command incomplete.
+gpon-olt-Estero-Medio(config)#
+
+========== show running-config | begin schedule ==========
+show running-config | begin schedule
+gpon-olt-Estero-Medio(config)#
+
+========== end ==========
+end
+gpon-olt-Estero-Medio#
+
+========== interface gpon 0/1 ==========
+interface gpon 0/1
+% Unknown command.
+gpon-olt-Estero-Medio#
+
+========== show onu state ==========
+show onu state
+% Unknown command.
+gpon-olt-Estero-Medio#
+
+========== exit ==========
+exit
+
+========== interface gpon 0/2 ==========
+
+
+========== show onu state ==========
+
+
+========== exit ==========
+
+
+========== interface gpon 0/3 ==========
+
+
+========== show onu state ==========
+
+
+========== exit ==========
+
+
+========== interface gpon 0/4 ==========
+
+
+========== show onu state ==========
+
+
+========== exit ==========
+
+
+========== interface gpon 0/5 ==========
+
+
+========== show onu state ==========
+
+
+========== exit ==========
+
+
+========== interface gpon 0/6 ==========
+
+
+========== show onu state ==========
+
+
+========== exit ==========
+
+
+========== interface gpon 0/7 ==========
+
+
+========== show onu state ==========
+
+
+========== exit ==========
+
+
+========== interface gpon 0/8 ==========
+
+
+========== show onu state ==========
+
+
+========== exit ==========
+
+Traceback (most recent call last):
+  File "c:\Users\Manuel\Documents\GitHub\informacion\centinela_work\olt2.py", line 91, in <module>
+    run(cmds)
+  File "c:\Users\Manuel\Documents\GitHub\informacion\centinela_work\olt2.py", line 80, in run
+    s.sendall(b"exit\r\n"); time.sleep(0.2); s.close()
+    ^^^^^^^^^^^^^^^^^^^^^^
+ConnectionAbortedError: [WinError 10053] Se ha anulado una conexión establecida por el software en su equipo host

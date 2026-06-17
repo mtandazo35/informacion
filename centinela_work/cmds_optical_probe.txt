@@ -1,0 +1,9 @@
+configure terminal
+interface gpon 0/1
+show pon optical ?
+show pon rx_power ?
+show pon onu ?
+show onu 1 optical_info
+show onu 1 distance
+show onu 1 ber
+exit

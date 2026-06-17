@@ -1,0 +1,386 @@
+
+=== show interface gigabitethernet 0/3 ===
+show interface gigabitethernet 0/3
+ Interface gigabitEthernet0/3's information.
+    GigabitEthernet0/3 current state : Up
+    Up time: 2026-05-17 17:49:35
+    Up count: 4
+    Description: 
+    Hardware Type is 10 Gigabit Ethernet, Hardware address is 0:0:0:0:0:0
+    The Maximum Transmit Unit is 1500
+    Media type is twisted pair, loopback not set
+    Port hardware type is 10 Gigabit,SFP+
+    Link speed type: autonegotiation, Link duplex type: full-duplex
+    Current link state: Up
+    Current autonegotiation mode: disable
+    Current link speed: 10000Mbps,  Current link mode: full-duplex
+    Inter Packet Gap: 96 ns
+    Flow Control: disable  MDIX Mode: force
+    jumboframe :disable     The Maximum Frame Length is 1536
+    Broadcast storm control: 1600 fps
+    Multicast storm control: disable
+    Unknow unicast storm control: 1600 fps
+    Ingress line rate control: no limit
+    Egress line rate control: no limit
+    mac address learn state : enable, no limit
+    Port priority: 0
+    PVID: 1
+    Port combo mode: null
+    Isolate  member : no
+    Port link-type: hybrid
+    Untagged VLAN ID:     1  
+    Tagged VLAN ID  :   100    101  
+    Last 300 seconds input:  12042081 packets/sec   4.00 MB/sec
+    Last 300 seconds output:  6379209 packets/sec   6.00 MB/sec
+    Input(total):  3614481320 packets, 29557190009416 bytes
+           249255262 broadcasts, 2301476 multicasts
+    Input(normal):  3614481320 packets, 29557190009416 bytes 
+           249255262 broadcasts, 2301476 multicasts, 0 pauses
+    Input:  0 input errors, 0 runts, 0 giants,  0 throttles, 0 CRC
+            0 overruns, 0 aborts, 0 ignored, 0 parity errors
+    Output(total): 1914518998 packets, 4267082597011 bytes
+           220971519 broadcasts, 229658 multicasts, 0 pauses
+    Output(normal): 1914518998 packets, 4267082597011 bytes
+           220971519 broadcasts, 229658 multicasts, 0 pauses
+    Output: 0 output errors,  0 underruns, 0 buffer failures
+            0 aborts, 0 deferred, 0 collisions, 0 late collisions
+            0 lost carrier, 0 no carrier
+
+gpon-olt-Estero-Medio#
+
+=== show interface gigabitethernet 0/4 ===
+show interface gigabitethernet 0/4
+ Interface gigabitEthernet0/4's information.
+    GigabitEthernet0/4 current state : Down
+    Up time: Never
+    Up count: 0
+    Description: 
+    Hardware Type is 10 Gigabit Ethernet, Hardware address is 0:0:0:0:0:0
+    The Maximum Transmit Unit is 1500
+    Media type is twisted pair, loopback not set
+    Port hardware type is 10 Gigabit,SFP+
+    Link speed type: autonegotiation, Link duplex type: full-duplex
+    Current link state: Down
+    Current autonegotiation mode: disable
+    Current link speed: 10000Mbps,  Current link mode: full-duplex
+    Inter Packet Gap: 96 ns
+    Flow Control: disable  MDIX Mode: force
+    jumboframe :disable     The Maximum Frame Length is 1536
+    Broadcast storm control: 512 fps
+    Multicast storm control: disable
+    Unknow unicast storm control: 512 fps
+    Ingress line rate control: no limit
+    Egress line rate control: no limit
+    mac address learn state : enable, no limit
+    Port priority: 0
+    PVID: 1
+    Port combo mode: null
+    Isolate  member : no
+    Port link-type: hybrid
+    Untagged VLAN ID:     1  
+    Tagged VLAN ID  :   100    101  
+    Last 300 seconds input:  0 packets    0 bytes
+    Last 300 seconds output:  0 packets    0 bytes
+    Input(total):  0 packets, 0 bytes
+           0 broadcasts, 0 multicasts
+    Input(normal):  0 packets, 0 bytes 
+           0 broadcasts, 0 multicasts, 0 pauses
+    Input:  0 input errors, 0 runts, 0 giants,  0 throttles, 0 CRC
+            0 overruns, 0 aborts, 0 ignored, 0 parity errors
+    Output(total): 0 packets, 0 bytes
+           0 broadcasts, 0 multicasts, 0 pauses
+    Output(normal): 0 packets, 0 bytes
+           0 broadcasts, 0 multicasts, 0 pauses
+    Output: 0 output errors,  0 underruns, 0 buffer failures
+            0 aborts, 0 deferred, 0 collisions, 0 late collisions
+            0 lost carrier, 0 no carrier
+
+gpon-olt-Estero-Medio#
+
+=== show interface gigabitethernet 0/5 ===
+show interface gigabitethernet 0/5
+ Interface gigabitEthernet0/5's information.
+    GigabitEthernet0/5 current state : Down
+    Up time: Never
+    Up count: 0
+    Description: 
+    Hardware Type is Gigabit Ethernet, Hardware address is 0:0:0:0:0:0
+    The Maximum Transmit Unit is 1500
+    Media type is twisted pair, loopback not set
+    Port hardware type is 1000Base-TX
+    Link speed type: autonegotiation, Link duplex type: autonegotiation
+    Current link state: Down
+    Current autonegotiation mode: enable
+    Current link speed: 10Mbps,  Current link mode: full-duplex
+    Inter Packet Gap: 96 ns
+    Flow Control: disable  MDIX Mode: force
+    jumboframe :disable     The Maximum Frame Length is 1536
+    Broadcast storm control: 512 fps
+    Multicast storm control: disable
+    Unknow unicast storm control: 512 fps
+    Ingress line rate control: no limit
+    Egress line rate control: no limit
+    mac address learn state : enable, no limit
+    Port priority: 0
+    PVID: 1
+    Port combo mode: null
+    Isolate  member : no
+    Port link-type: hybrid
+    Untagged VLAN ID:     1  
+    Tagged VLAN ID  :   100    101  
+    Last 300 seconds input:  0 packets    0 bytes
+    Last 300 seconds output:  0 packets    0 bytes
+    Input(total):  0 packets, 0 bytes
+           0 broadcasts, 0 multicasts
+    Input(normal):  0 packets, 0 bytes 
+           0 broadcasts, 0 multicasts, 0 pauses
+    Input:  0 input errors, 0 runts, 0 giants,  0 throttles, 0 CRC
+            0 overruns, 0 aborts, 0 ignored, 0 parity errors
+    Output(total): 0 packets, 0 bytes
+           0 broadcasts, 0 multicasts, 0 pauses
+    Output(normal): 0 packets, 0 bytes
+           0 broadcasts, 0 multicasts, 0 pauses
+    Output: 0 output errors,  0 underruns, 0 buffer failures
+            0 aborts, 0 deferred, 0 collisions, 0 late collisions
+            0 lost carrier, 0 no carrier
+
+gpon-olt-Estero-Medio#
+
+=== show interface gigabitethernet 0/6 ===
+show interface gigabitethernet 0/6
+ Interface gigabitEthernet0/6's information.
+    GigabitEthernet0/6 current state : Down
+    Up time: Never
+    Up count: 0
+    Description: 
+    Hardware Type is Gigabit Ethernet, Hardware address is 0:0:0:0:0:0
+    The Maximum Transmit Unit is 1500
+    Media type is twisted pair, loopback not set
+    Port hardware type is 1000Base-TX
+    Link speed type: autonegotiation, Link duplex type: autonegotiation
+    Current link state: Down
+    Current autonegotiation mode: enable
+    Current link speed: 10Mbps,  Current link mode: full-duplex
+    Inter Packet Gap: 96 ns
+    Flow Control: disable  MDIX Mode: force
+    jumboframe :disable     The Maximum Frame Length is 1536
+    Broadcast storm control: 512 fps
+    Multicast storm control: disable
+    Unknow unicast storm control: 512 fps
+    Ingress line rate control: no limit
+    Egress line rate control: no limit
+    mac address learn state : enable, no limit
+    Port priority: 0
+    PVID: 1
+    Port combo mode: null
+    Isolate  member : no
+    Port link-type: hybrid
+    Untagged VLAN ID:     1  
+    Tagged VLAN ID  :   100    101  
+    Last 300 seconds input:  0 packets    0 bytes
+    Last 300 seconds output:  0 packets    0 bytes
+    Input(total):  0 packets, 0 bytes
+           0 broadcasts, 0 multicasts
+    Input(normal):  0 packets, 0 bytes 
+           0 broadcasts, 0 multicasts, 0 pauses
+    Input:  0 input errors, 0 runts, 0 giants,  0 throttles, 0 CRC
+            0 overruns, 0 aborts, 0 ignored, 0 parity errors
+    Output(total): 0 packets, 0 bytes
+           0 broadcasts, 0 multicasts, 0 pauses
+    Output(normal): 0 packets, 0 bytes
+           0 broadcasts, 0 multicasts, 0 pauses
+    Output: 0 output errors,  0 underruns, 0 buffer failures
+            0 aborts, 0 deferred, 0 collisions, 0 late collisions
+            0 lost carrier, 0 no carrier
+
+gpon-olt-Estero-Medio#
+
+=== show interface gigabitethernet 0/7 ===
+show interface gigabitethernet 0/7
+ Interface gigabitEthernet0/7's information.
+    GigabitEthernet0/7 current state : Down
+    Up time: Never
+    Up count: 0
+    Description: 
+    Hardware Type is Gigabit Ethernet, Hardware address is 0:0:0:0:0:0
+    The Maximum Transmit Unit is 1500
+    Media type is twisted pair, loopback not set
+    Port hardware type is 1000Base-TX
+    Link speed type: autonegotiation, Link duplex type: autonegotiation
+    Current link state: Down
+    Current autonegotiation mode: enable
+    Current link speed: 10Mbps,  Current link mode: full-duplex
+    Inter Packet Gap: 96 ns
+    Flow Control: disable  MDIX Mode: force
+    jumboframe :disable     The Maximum Frame Length is 1536
+    Broadcast storm control: 512 fps
+    Multicast storm control: disable
+    Unknow unicast storm control: 512 fps
+    Ingress line rate control: no limit
+    Egress line rate control: no limit
+    mac address learn state : enable, no limit
+    Port priority: 0
+    PVID: 1
+    Port combo mode: null
+    Isolate  member : no
+    Port link-type: hybrid
+    Untagged VLAN ID:     1  
+    Tagged VLAN ID  : 
+    Last 300 seconds input:  0 packets    0 bytes
+    Last 300 seconds output:  0 packets    0 bytes
+    Input(total):  0 packets, 0 bytes
+           0 broadcasts, 0 multicasts
+    Input(normal):  0 packets, 0 bytes 
+           0 broadcasts, 0 multicasts, 0 pauses
+    Input:  0 input errors, 0 runts, 0 giants,  0 throttles, 0 CRC
+            0 overruns, 0 aborts, 0 ignored, 0 parity errors
+    Output(total): 0 packets, 0 bytes
+           0 broadcasts, 0 multicasts, 0 pauses
+    Output(normal): 0 packets, 0 bytes
+           0 broadcasts, 0 multicasts, 0 pauses
+    Output: 0 output errors,  0 underruns, 0 buffer failures
+            0 aborts, 0 deferred, 0 collisions, 0 late collisions
+            0 lost carrier, 0 no carrier
+
+gpon-olt-Estero-Medio#
+
+=== show interface gigabitethernet 0/8 ===
+show interface gigabitethernet 0/8
+ Interface gigabitEthernet0/8's information.
+    GigabitEthernet0/8 current state : Down
+    Up time: Never
+    Up count: 0
+    Description: 
+    Hardware Type is Gigabit Ethernet, Hardware address is 0:0:0:0:0:0
+    The Maximum Transmit Unit is 1500
+    Media type is twisted pair, loopback not set
+    Port hardware type is 1000Base-TX
+    Link speed type: autonegotiation, Link duplex type: autonegotiation
+    Current link state: Down
+    Current autonegotiation mode: enable
+    Current link speed: 10Mbps,  Current link mode: full-duplex
+    Inter Packet Gap: 96 ns
+    Flow Control: disable  MDIX Mode: force
+    jumboframe :disable     The Maximum Frame Length is 1536
+    Broadcast storm control: 512 fps
+    Multicast storm control: disable
+    Unknow unicast storm control: 512 fps
+    Ingress line rate control: no limit
+    Egress line rate control: no limit
+    mac address learn state : enable, no limit
+    Port priority: 0
+    PVID: 1
+    Port combo mode: null
+    Isolate  member : no
+    Port link-type: hybrid
+    Untagged VLAN ID:     1  
+    Tagged VLAN ID  : 
+    Last 300 seconds input:  0 packets    0 bytes
+    Last 300 seconds output:  0 packets    0 bytes
+    Input(total):  0 packets, 0 bytes
+           0 broadcasts, 0 multicasts
+    Input(normal):  0 packets, 0 bytes 
+           0 broadcasts, 0 multicasts, 0 pauses
+    Input:  0 input errors, 0 runts, 0 giants,  0 throttles, 0 CRC
+            0 overruns, 0 aborts, 0 ignored, 0 parity errors
+    Output(total): 0 packets, 0 bytes
+           0 broadcasts, 0 multicasts, 0 pauses
+    Output(normal): 0 packets, 0 bytes
+           0 broadcasts, 0 multicasts, 0 pauses
+    Output: 0 output errors,  0 underruns, 0 buffer failures
+            0 aborts, 0 deferred, 0 collisions, 0 late collisions
+            0 lost carrier, 0 no carrier
+
+gpon-olt-Estero-Medio#
+
+=== show interface gigabitethernet 0/9 ===
+show interface gigabitethernet 0/9
+the gigabitethernet interface's portno is out of range.
+gpon-olt-Estero-Medio#
+
+=== show interface gigabitethernet 0/10 ===
+show interface gigabitethernet 0/10
+the gigabitethernet interface's portno is out of range.
+gpon-olt-Estero-Medio#
+
+=== configure terminal ===
+configure terminal
+gpon-olt-Estero-Medio(config)#
+
+=== show alarm ? ===
+show alarm 
+  configuration  Specify alarm or event configuration.
+  id             alarm id
+  code           alarm code
+  level          alarm level
+  summary        show total alarm number
+  oamlog         Specify onu oam log.
+  information    Specify alarm or event information.
+gpon-olt-Estero-Medio(config)# show alarm 
+% Command incomplete.
+gpon-olt-Estero-Medio(config)#
+
+=== show alarm-event ? ===
+show alarm-event 
+  information  Specify alarm or event information.
+gpon-olt-Estero-Medio(config)# show alarm-event 
+% Command incomplete.
+gpon-olt-Estero-Medio(config)#
+
+=== show alarm ===
+show alarm
+% Command incomplete.
+gpon-olt-Estero-Medio(config)#
+
+=== show alarm-event ===
+show alarm-event
+% Command incomplete.
+gpon-olt-Estero-Medio(config)#
+
+=== show fan ===
+show fan
+
+ Chassis Fans State Information
+ --------------------------------------------
+ current fans state: auto-running
+ current temperature:45.3 .C
+ open fan temperature:35.0 .C
+ --------------------------------------------
+gpon-olt-Estero-Medio(config)#
+
+=== show cpu ===
+show cpu
+% Command incomplete.
+gpon-olt-Estero-Medio(config)#
+
+=== show perf-stats ===
+show perf-stats
+% Command incomplete.
+gpon-olt-Estero-Medio(config)#
+
+=== show syslog ===
+
+
+=== show log ===
+
+
+=== show pon ? ===
+
+
+=== show pon ===
+
+
+=== show rogue-onu-detect ===
+
+
+=== show running-config | include uplink ===
+
+
+=== show running-config | include hostname ===
+
+
+=== show running-config | include enable-password ===
+
+
+=== end ===
+
