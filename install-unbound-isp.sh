@@ -7,63 +7,213 @@
 #   - Unbound 1.22+ recursivo puro (DNSSEC, RFC 5011/8145/8198)
 #   - RPZ: bloqueo de malware/phishing/botnet (~1M dominios, timer 03:15 AM)
 #   - DoT (853) y DoH (8053) con cert Let's Encrypt automático
-#   - Query logging a /var/log/unbound/queries.log (90 días)
+#   - Query logging → /var/log/unbound/queries.log (90 días)
 #   - Prometheus + node_exporter + unbound_exporter + log_exporter
 #   - UFW firewall (DNS solo a CLIENT_NETWORKS, SSH abierto)
 #   - Swap 2GB, kernel tuning, journald cap
-#
-# Uso:
-#   1. Editar las variables en la sección CONFIGURACIÓN (abajo)
-#   2. bash install-unbound-isp.sh
 # ==============================================================================
 set -euo pipefail
-
-# ══════════════════════════════════════════════════════════════════════════════
-#  CONFIGURACIÓN — SOLO CAMBIAR ESTAS VARIABLES
-# ══════════════════════════════════════════════════════════════════════════════
-
-# Redes o IPs que pueden hacer consultas DNS a este servidor
-# Ejemplos:
-#   "0.0.0.0/0"           → acceso público (cualquier IP en internet)
-#   "192.168.1.0/24"      → solo red local
-#   "203.0.113.0/24"      → rango de tu ISP/clientes
-CLIENT_NETWORKS=(
-    "0.0.0.0/0"
-)
-
-# Dominio para DNS-over-HTTPS (DoH) y DNS-over-TLS (DoT)
-# Requisito: el dominio DEBE apuntar (registro A) a la IP de este VPS
-# El instalador obtiene el certificado Let's Encrypt automáticamente
-# Dejar vacío ("") para deshabilitar DoT/DoH
-DOT_DOMAIN=""
-
-# Bloqueo de malware/phishing/botnet via RPZ
-# true  → recomendado; requiere ~700MB RAM adicional
-# false → resolver puro sin filtrado
-INSTALL_RPZ=true
-
-# ══════════════════════════════════════════════════════════════════════════════
-#  FIN DE CONFIGURACIÓN
-# ══════════════════════════════════════════════════════════════════════════════
+export DEBIAN_FRONTEND=noninteractive
 
 # ── Colores ────────────────────────────────────────────────────────────────────
-RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'; BLUE='\033[0;34m'; NC='\033[0m'
+RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'
+BLUE='\033[0;34m'; CYAN='\033[0;36m'; BOLD='\033[1m'; NC='\033[0m'
 log()  { echo -e "${GREEN}[+]${NC} $1"; }
 info() { echo -e "${BLUE}[i]${NC} $1"; }
 warn() { echo -e "${YELLOW}[!]${NC} $1"; }
 err()  { echo -e "${RED}[x]${NC} $1"; exit 1; }
+ok()   { echo -e "  ${GREEN}✓${NC} $1"; }
+ask()  { echo -e "${CYAN}${BOLD}→${NC} $1"; }
 
 [[ $EUID -ne 0 ]] && err "Ejecutar como root: sudo bash $0"
-[[ ${#CLIENT_NETWORKS[@]} -eq 0 ]] && err "CLIENT_NETWORKS está vacío — ningún cliente podría consultar."
 
-# ── Auto-detección ─────────────────────────────────────────────────────────────
+# ── Variables (se llenan por menú o por valores hardcodeados) ──────────────────
+CLIENT_NETWORKS=()
+DOT_DOMAIN=""
+INSTALL_RPZ=true
+
+# ==============================================================================
+# MENÚ INTERACTIVO
+# ==============================================================================
+
+# Valida IPv4/IPv6 individual o CIDR
+validate_network() {
+    local input="$1"
+    # IPv4 con CIDR opcional
+    if [[ "$input" =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}(/([0-9]|[12][0-9]|3[0-2]))?$ ]]; then
+        local IFS='.'; read -ra octets <<< "${input%%/*}"
+        for oct in "${octets[@]}"; do [[ "$oct" -gt 255 ]] && return 1; done
+        return 0
+    fi
+    # IPv6 con CIDR opcional (simplificado)
+    if [[ "$input" =~ ^[0-9a-fA-F:]+(/([0-9]|[1-9][0-9]|1[01][0-9]|12[0-8]))?$ ]]; then
+        return 0
+    fi
+    return 1
+}
+
+# Normaliza IP sin CIDR → agrega /32 (IPv4) o /128 (IPv6)
+normalize_network() {
+    local input="$1"
+    if [[ "$input" != *"/"* ]]; then
+        if [[ "$input" == *":"* ]]; then echo "${input}/128"
+        else echo "${input}/32"; fi
+    else
+        echo "$input"
+    fi
+}
+
+interactive_menu() {
+    local SERVER_IP; SERVER_IP=$(hostname -I | awk '{print $1}')
+    local RAM_MB; RAM_MB=$(awk '/MemTotal/{print int($2/1024)}' /proc/meminfo)
+
+    clear
+    echo ""
+    echo -e "${BLUE}${BOLD}╔═══════════════════════════════════════════════════════════╗${NC}"
+    echo -e "${BLUE}${BOLD}║         Unbound DNS ISP — Instalador Interactivo          ║${NC}"
+    echo -e "${BLUE}${BOLD}╠═══════════════════════════════════════════════════════════╣${NC}"
+    echo -e "${BLUE}${BOLD}║${NC}  Servidor: ${BOLD}${SERVER_IP}${NC}   RAM: ${RAM_MB}MB   CPU: $(nproc) vCPU"
+    echo -e "${BLUE}${BOLD}║${NC}  Sistema:  $(grep PRETTY_NAME /etc/os-release 2>/dev/null | cut -d= -f2 | tr -d '\"')"
+    echo -e "${BLUE}${BOLD}╚═══════════════════════════════════════════════════════════╝${NC}"
+    echo ""
+
+    # ── PASO 1: Redes de clientes ───────────────────────────────────────────────
+    echo -e "${BOLD}[1/3] REDES CON ACCESO AL DNS${NC}"
+    echo -e "      Ingresa las IPs o rangos que podrán consultar este servidor."
+    echo -e "      Formatos válidos:  ${CYAN}203.0.113.0/24${NC}  •  ${CYAN}1.2.3.4${NC}  •  ${CYAN}2803:2540::/32${NC}"
+    echo -e "      Escribe ${CYAN}todos${NC} para acceso público (0.0.0.0/0)."
+    echo -e "      Escribe ${CYAN}listo${NC} cuando termines (mínimo 1 entrada)."
+    echo ""
+
+    while true; do
+        ask "Red o IP (o 'todos' / 'listo'): "
+        read -r input
+        input=$(echo "$input" | tr '[:upper:]' '[:lower:]' | xargs)
+
+        case "$input" in
+            todos|all|"0.0.0.0/0")
+                CLIENT_NETWORKS=("0.0.0.0/0")
+                ok "Acceso público habilitado (0.0.0.0/0)"
+                break
+                ;;
+            listo|done|"")
+                if [[ ${#CLIENT_NETWORKS[@]} -eq 0 ]]; then
+                    warn "Debes ingresar al menos una red."
+                    continue
+                fi
+                break
+                ;;
+            *)
+                local net; net=$(normalize_network "$input")
+                if validate_network "$net"; then
+                    # Evitar duplicados
+                    local dup=false
+                    for existing in "${CLIENT_NETWORKS[@]}"; do
+                        [[ "$existing" == "$net" ]] && dup=true && break
+                    done
+                    if [[ "$dup" == true ]]; then
+                        warn "  ${net} ya está en la lista."
+                    else
+                        CLIENT_NETWORKS+=("$net")
+                        ok "Agregado: ${net}"
+                    fi
+                else
+                    warn "  '${input}' no es una IP o CIDR válido. Ejemplos: 192.168.1.0/24  10.0.0.1"
+                fi
+                ;;
+        esac
+    done
+
+    echo ""
+    echo -e "  Redes configuradas:"
+    for net in "${CLIENT_NETWORKS[@]}"; do
+        echo -e "    ${CYAN}•${NC} $net"
+    done
+    echo ""
+
+    # ── PASO 2: Dominio DoH/DoT ─────────────────────────────────────────────────
+    echo -e "${BOLD}[2/3] DOMINIO PARA DoH / DoT  (DNS-over-HTTPS / DNS-over-TLS)${NC}"
+    echo -e "      Requisito: el dominio debe tener un registro ${CYAN}A → ${SERVER_IP}${NC}"
+    echo -e "      El instalador obtiene el certificado Let's Encrypt automáticamente."
+    echo ""
+    ask "Dominio (ej: dns.tuempresa.com) [Enter = sin DoH]: "
+    read -r input
+    input=$(echo "$input" | xargs)
+
+    if [[ -n "$input" ]]; then
+        # Validar que sea un dominio (no IP, contiene punto, sin espacios ni /)
+        if [[ "$input" =~ ^[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?)+$ ]]; then
+            DOT_DOMAIN="$input"
+            ok "DoH/DoT habilitado → ${CYAN}https://${DOT_DOMAIN}:8053/dns-query${NC}"
+        else
+            warn "Dominio inválido ('${input}'). DoH/DoT deshabilitado."
+        fi
+    else
+        info "DoH/DoT deshabilitado."
+    fi
+    echo ""
+
+    # ── PASO 3: RPZ ─────────────────────────────────────────────────────────────
+    echo -e "${BOLD}[3/3] BLOQUEO DE AMENAZAS (RPZ)${NC}"
+    echo -e "      Bloquea malware, phishing y botnets (~1M dominios)."
+    echo -e "      Requiere ~700MB RAM extra. Timer de actualización: 03:15 AM diario."
+    echo ""
+
+    local ram_warn=""
+    [[ $RAM_MB -lt 1500 ]] && ram_warn=" ${YELLOW}[!] RAM < 1.5GB — considera false${NC}"
+    ask "¿Habilitar RPZ? [S/n]:${ram_warn} "
+    read -r input
+    input=$(echo "$input" | tr '[:upper:]' '[:lower:]' | xargs)
+    case "$input" in
+        n|no) INSTALL_RPZ=false; info "RPZ deshabilitado." ;;
+        *)    INSTALL_RPZ=true;  ok "RPZ habilitado." ;;
+    esac
+    echo ""
+
+    # ── RESUMEN Y CONFIRMACIÓN ──────────────────────────────────────────────────
+    echo -e "${BOLD}────────────────────────────────────────────────────────────${NC}"
+    echo -e "${BOLD}  RESUMEN DE INSTALACIÓN${NC}"
+    echo -e "${BOLD}────────────────────────────────────────────────────────────${NC}"
+    echo -e "  Servidor:         ${BOLD}${SERVER_IP}${NC}"
+    echo -e "  Redes permitidas: ${CYAN}$(IFS=', '; echo "${CLIENT_NETWORKS[*]}")${NC}"
+    if [[ -n "$DOT_DOMAIN" ]]; then
+        echo -e "  DoH/DoT:          ${CYAN}${DOT_DOMAIN}${NC} (cert Let's Encrypt automático)"
+    else
+        echo -e "  DoH/DoT:          deshabilitado"
+    fi
+    echo -e "  RPZ:              $( [[ "$INSTALL_RPZ" == true ]] && echo "${CYAN}sí${NC} (~1M dominios bloqueados)" || echo "no")"
+    echo -e "  RAM:              ${RAM_MB}MB  •  Cache: $(( RAM_MB/16 ))m msg + $(( RAM_MB/8 ))m rrset"
+    echo -e "  DNSSEC:           RFC 5011 + RFC 8198 (ICANN compliant)"
+    echo -e "  Prometheus:       ${CYAN}http://${SERVER_IP}:9090${NC}"
+    echo -e "  Logs DNS:         /var/log/unbound/queries.log (90 días)"
+    echo -e "${BOLD}────────────────────────────────────────────────────────────${NC}"
+    echo ""
+    ask "¿Iniciar instalación? [S/n]: "
+    read -r input
+    input=$(echo "$input" | tr '[:upper:]' '[:lower:]' | xargs)
+    [[ "$input" == "n" || "$input" == "no" ]] && { echo "Instalación cancelada."; exit 0; }
+    echo ""
+}
+
+# Ejecutar menú solo si hay terminal interactiva
+if [[ -t 0 ]]; then
+    interactive_menu
+else
+    # Modo no-interactivo: CLIENT_NETWORKS debe estar configurado arriba
+    [[ ${#CLIENT_NETWORKS[@]} -eq 0 ]] && \
+        err "Sin terminal interactiva y CLIENT_NETWORKS vacío. Edita el script o ejecútalo con una TTY."
+fi
+
+# ==============================================================================
+# AUTO-DETECCIÓN
+# ==============================================================================
 NUM_THREADS=$(nproc)
 NUM_SLABS=1
 while [[ $NUM_SLABS -lt $NUM_THREADS ]]; do NUM_SLABS=$((NUM_SLABS * 2)); done
 
 RAM_MB=$(awk '/MemTotal/{print int($2/1024)}' /proc/meminfo)
-_M=$(( RAM_MB / 16 )); (( _M < 32 )) && _M=32; (( _M > 512 )) && _M=512; MSG_CACHE_SIZE="${_M}m"
-_R=$(( RAM_MB / 8  )); (( _R < 64 )) && _R=64; (( _R > 1024)) && _R=1024; RRSET_CACHE_SIZE="${_R}m"
+_M=$(( RAM_MB / 16 )); (( _M < 32  )) && _M=32;  (( _M > 512  )) && _M=512;  MSG_CACHE_SIZE="${_M}m"
+_R=$(( RAM_MB / 8  )); (( _R < 64  )) && _R=64;  (( _R > 1024 )) && _R=1024; RRSET_CACHE_SIZE="${_R}m"
 
 SERVER_IP=$(hostname -I | awk '{print $1}')
 
@@ -87,16 +237,16 @@ PROMETHEUS_PORT=9090
 EXPORTER_FALLBACK_TAG="v0.6.0"
 NODE_EXPORTER_VERSION="1.8.2"
 
-# ── Banner ─────────────────────────────────────────────────────────────────────
+# ==============================================================================
+# BANNER DE INSTALACIÓN
+# ==============================================================================
 echo ""
 echo -e "${BLUE}╔═══════════════════════════════════════════════════════════╗${NC}"
-echo -e "${BLUE}║        Unbound DNS ISP — Instalador Universal             ║${NC}"
+echo -e "${BLUE}║        Unbound DNS ISP — Instalando...                    ║${NC}"
 echo -e "${BLUE}╚═══════════════════════════════════════════════════════════╝${NC}"
 echo ""
-info "Sistema: $(grep PRETTY_NAME /etc/os-release 2>/dev/null | cut -d= -f2 | tr -d '\"' || uname -sr)"
-info "IP:      ${SERVER_IP}   vCPU: ${NUM_THREADS}   RAM: ${RAM_MB}MB"
-info "Cache:   ${MSG_CACHE_SIZE} msg + ${RRSET_CACHE_SIZE} rrset"
-info "IPv6:    ${DO_IP6}   RPZ: ${INSTALL_RPZ}   DoH: ${DOT_DOMAIN:-deshabilitado}"
+info "IP: ${SERVER_IP}  •  vCPU: ${NUM_THREADS}  •  RAM: ${RAM_MB}MB  •  IPv6: ${DO_IP6}"
+info "Cache: ${MSG_CACHE_SIZE} msg + ${RRSET_CACHE_SIZE} rrset  •  RPZ: ${INSTALL_RPZ}  •  DoH: ${DOT_DOMAIN:-no}"
 echo ""
 
 # ==============================================================================
@@ -104,7 +254,8 @@ echo ""
 # ==============================================================================
 if ! command -v ufw &>/dev/null; then
     log "Instalando UFW..."
-    apt-get update -qq && apt-get install -y -qq ufw
+    apt-get update -qq
+    apt-get install -y -qq ufw
 fi
 if ! ufw status | grep -q "Status: active"; then
     log "Activando UFW (SSH abierto, resto deny)..."
@@ -200,7 +351,11 @@ ACL_BLOCK+="    access-control: ::0/0 deny\n"
 ACL_BLOCK+="    access-control: 127.0.0.0/8 allow\n"
 ACL_BLOCK+="    access-control: ::1/128 allow\n"
 for net in "${CLIENT_NETWORKS[@]}"; do
-    ACL_BLOCK+="    access-control: ${net} allow\n"
+    if [[ "$net" == *":"* ]]; then
+        ACL_BLOCK+="    access-control: ${net} allow\n"
+    else
+        ACL_BLOCK+="    access-control: ${net} allow\n"
+    fi
 done
 
 cat > /etc/unbound/unbound.conf << CONF
@@ -306,7 +461,6 @@ CONF
 if [[ -n "$DOT_DOMAIN" ]]; then
     log "Configurando DoT/DoH para ${DOT_DOMAIN}..."
 
-    # Instalar certbot si falta
     if ! command -v certbot &>/dev/null; then
         log "  Instalando certbot..."
         apt-get install -y -qq certbot
@@ -315,19 +469,18 @@ if [[ -n "$DOT_DOMAIN" ]]; then
     CERT_LIVE="/etc/letsencrypt/live/${DOT_DOMAIN}"
     if [[ ! -d "$CERT_LIVE" ]]; then
         log "  Obteniendo certificado Let's Encrypt para ${DOT_DOMAIN}..."
-        # Abrir temporalmente port 80 para el challenge HTTP-01
         ufw allow 80/tcp comment "certbot-temp" >/dev/null 2>&1 || true
         if certbot certonly --standalone --non-interactive --agree-tos \
                 --register-unsafely-without-email -d "$DOT_DOMAIN" 2>&1; then
             log "  Certificado obtenido."
         else
-            warn "  certbot falló. Verificar que ${DOT_DOMAIN} apunta a ${SERVER_IP} y port 80 accesible."
+            warn "  certbot falló. Verificar que ${DOT_DOMAIN} apunte a ${SERVER_IP} y que el puerto 80 esté accesible."
             warn "  DoT/DoH deshabilitado — continuar sin él."
             DOT_DOMAIN=""
         fi
         ufw delete allow 80/tcp >/dev/null 2>&1 || true
     else
-        log "  Cert existente encontrado en ${CERT_LIVE}."
+        log "  Certificado existente en ${CERT_LIVE}."
     fi
 
     if [[ -n "$DOT_DOMAIN" && -d "$CERT_LIVE" ]]; then
@@ -351,7 +504,6 @@ server:
     tls-service-pem: "/etc/unbound/tls/fullchain.pem"
 DOTCONF
 
-        # Hook renovación automática
         mkdir -p /etc/letsencrypt/renewal-hooks/deploy
         cat > /etc/letsencrypt/renewal-hooks/deploy/reload-unbound.sh << HOOK
 #!/bin/bash
@@ -368,7 +520,7 @@ HOOK
         log "  DoT/DoH configurado + hook de renovación instalado."
     fi
 else
-    info "DOT_DOMAIN vacío — DoT/DoH deshabilitado."
+    info "DoT/DoH deshabilitado."
 fi
 
 # ==============================================================================
@@ -435,7 +587,6 @@ RPZCONF
 
     cat > /usr/local/bin/rpz-update.sh << 'RPZSCRIPT'
 #!/bin/bash
-# rpz-update.sh — actualiza zonas RPZ desde feeds gratuitos de threat intelligence
 set -euo pipefail
 
 RPZ_DIR="/etc/unbound/rpz"
@@ -624,7 +775,7 @@ RPZTIMER
     systemctl start rpz-update.timer
     log "  RPZ instalado. Timer 03:15 AM. Para poblar ahora: systemctl start rpz-update.service"
 else
-    info "INSTALL_RPZ=false — RPZ deshabilitado."
+    info "RPZ deshabilitado."
 fi
 
 # ==============================================================================
@@ -684,10 +835,10 @@ LOGROTATECFG
 
 systemctl is-active --quiet rsyslog && systemctl restart rsyslog || \
     { systemctl enable --now rsyslog 2>/dev/null || true; }
-log "  Query logging: /var/log/unbound/queries.log (retención 90 días)"
+log "  Logs: /var/log/unbound/queries.log (retención 90 días)"
 
 # ==============================================================================
-# 7. UNBOUND EXPORTER (Prometheus)
+# 7. UNBOUND EXPORTER
 # ==============================================================================
 log "Instalando unbound_exporter..."
 EXPORTER_INSTALLED=false
@@ -698,8 +849,8 @@ if [[ "$ARCH" == "amd64" ]]; then
         | grep -oE 'v[0-9]+\.[0-9]+\.[0-9]+$' || true)
     [[ -z "$LATEST_TAG" ]] && LATEST_TAG="$EXPORTER_FALLBACK_TAG"
     EXPORTER_URL="https://github.com/letsencrypt/unbound_exporter/releases/download/${LATEST_TAG}/unbound_exporter-${LATEST_TAG}.x86_64.deb"
-    if wget -q --timeout=20 "$EXPORTER_URL" -O /tmp/unbound_exporter.deb 2>/dev/null \
-       && dpkg -i /tmp/unbound_exporter.deb &>/dev/null; then
+    if wget -q --timeout=20 "$EXPORTER_URL" -O /tmp/unbound_exporter.deb 2>/dev/null && \
+       dpkg -i /tmp/unbound_exporter.deb &>/dev/null; then
         EXPORTER_INSTALLED=true
         log "unbound_exporter ${LATEST_TAG} instalado."
     fi
@@ -765,11 +916,13 @@ SVC2
         systemctl start node-exporter
         NODE_INSTALLED=true
         log "node_exporter instalado."
+    else
+        warn "No se pudo descargar node_exporter."
     fi
 fi
 
 # ==============================================================================
-# 7c. LOG EXPORTER (métricas por IP y dominio)
+# 7c. LOG EXPORTER
 # ==============================================================================
 LOG_EXPORTER_BIN=/usr/local/bin/unbound-log-exporter.py
 log "Instalando unbound-log-exporter..."
@@ -954,13 +1107,12 @@ if [[ -n "$DOT_DOMAIN" && -f /etc/unbound/tls/fullchain.pem ]]; then
 fi
 [[ "$EXPORTER_INSTALLED" == true ]] && \
     check "unbound_exporter"       "curl -s --max-time 5 http://127.0.0.1:${EXPORTER_PORT}/metrics | grep -q 'unbound_up'"
-[[ "$NODE_INSTALLED" == true ]] && \
-    check "node_exporter"          "curl -s --max-time 5 http://127.0.0.1:9100/metrics | grep -q 'node_'"
+check "node_exporter"              "curl -s --max-time 5 http://127.0.0.1:9100/metrics | grep -q 'node_'"
 check "Prometheus"                 "curl -s --max-time 5 http://127.0.0.1:${PROMETHEUS_PORT}/-/healthy | grep -qi 'healthy'"
 check "Log exporter"               "curl -s --max-time 5 http://127.0.0.1:${LOG_EXPORTER_PORT}/metrics | grep -q 'unbound_client'"
 
 echo ""
-log "Latencia de resolución:"
+log "Latencia de resolución (caché frío):"
 for domain in google.com cloudflare.com; do
     ms=$(dig @127.0.0.1 "$domain" A +noall +stats +time=5 2>/dev/null | awk '/Query time/{print $4}' || echo "?")
     echo -e "  ${BLUE}→${NC} ${domain}: ${ms}ms"
@@ -975,21 +1127,22 @@ echo -e "${BLUE}║              INSTALACIÓN COMPLETA                        �
 echo -e "${BLUE}╠═══════════════════════════════════════════════════════════╣${NC}"
 echo -e "${BLUE}║${NC}  Tests: ${GREEN}${PASS} OK${NC} / ${RED}${FAIL} FAIL${NC}"
 echo -e "${BLUE}║${NC}"
-echo -e "${BLUE}║${NC}  DNS (UDP/TCP):  ${SERVER_IP}:53"
+echo -e "${BLUE}║${NC}  DNS (UDP/TCP):    ${BOLD}${SERVER_IP}:53${NC}"
+echo -e "${BLUE}║${NC}  Redes permitidas: $(IFS=', '; echo "${CLIENT_NETWORKS[*]}")"
 if [[ -n "$DOT_DOMAIN" && -f /etc/unbound/tls/fullchain.pem ]]; then
-echo -e "${BLUE}║${NC}  DoT:            tls://${DOT_DOMAIN}:853"
-echo -e "${BLUE}║${NC}  DoH:            https://${DOT_DOMAIN}:8053/dns-query"
+echo -e "${BLUE}║${NC}  DoT:              tls://${DOT_DOMAIN}:853"
+echo -e "${BLUE}║${NC}  DoH:              https://${DOT_DOMAIN}:8053/dns-query"
 fi
-echo -e "${BLUE}║${NC}  Prometheus:     http://${SERVER_IP}:${PROMETHEUS_PORT}"
-echo -e "${BLUE}║${NC}  Logs:           /var/log/unbound/queries.log (90 días)"
+echo -e "${BLUE}║${NC}  Prometheus:       http://${SERVER_IP}:${PROMETHEUS_PORT}"
+echo -e "${BLUE}║${NC}  Logs DNS:         /var/log/unbound/queries.log (90 días)"
 if [[ "$INSTALL_RPZ" == true ]]; then
-echo -e "${BLUE}║${NC}  RPZ:            malware+phishing+botnet | timer 03:15 AM"
-echo -e "${BLUE}║${NC}                  Poblar ahora: systemctl start rpz-update.service"
+echo -e "${BLUE}║${NC}  RPZ:              malware+phishing+botnet | timer 03:15 AM"
+echo -e "${BLUE}║${NC}                    Poblar ahora: systemctl start rpz-update.service"
 fi
-echo -e "${BLUE}║${NC}  DNSSEC:         RFC 5011 auto-rollover + RFC 8198 NSEC"
-echo -e "${BLUE}║${NC}  Cache:          ${MSG_CACHE_SIZE} msg + ${RRSET_CACHE_SIZE} rrset (${NUM_THREADS} threads)"
+echo -e "${BLUE}║${NC}  DNSSEC:           RFC 5011 auto-rollover + RFC 8198 NSEC"
+echo -e "${BLUE}║${NC}  Cache:            ${MSG_CACHE_SIZE} msg + ${RRSET_CACHE_SIZE} rrset (${NUM_THREADS} threads)"
 echo -e "${BLUE}╠═══════════════════════════════════════════════════════════╣${NC}"
-echo -e "${BLUE}║${NC}  Grafana datasource: http://${SERVER_IP}:${PROMETHEUS_PORT}"
+echo -e "${BLUE}║${NC}  Grafana datasource → http://${SERVER_IP}:${PROMETHEUS_PORT}"
 echo -e "${BLUE}╚═══════════════════════════════════════════════════════════╝${NC}"
 echo ""
 
