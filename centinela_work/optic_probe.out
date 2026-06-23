@@ -1,157 +1,0 @@
-
-========== configure terminal ==========
-configure terminal
-gpon-olt-Estero-Medio(config)#
-
-========== interface gpon 0/1 ==========
-interface gpon 0/1
-gpon-olt-Estero-Medio(config-pon-0/1)#
-
-========== show pon ? ==========
-show pon 
-  <1-8>                  Pon port number.
-  available-bandwidth    Specify PON bandwidth available.
-  info                   information.
-  onu                    Show onu.
-  onu-alarms-thresholds  Specify onu_alarms_thresholds
-  optical                Specify pon optical module
-  range                  Specified range configuration.
-  rx_power               Specify pon rx optical.
-  state                  Working state.
-  transceiver-info       Specify transceiver information.
-gpon-olt-Estero-Medio(config-pon-0/1)# show pon 
-% Command incomplete.
-gpon-olt-Estero-Medio(config-pon-0/1)#
-
-========== show pon ==========
-show pon
-% Command incomplete.
-gpon-olt-Estero-Medio(config-pon-0/1)#
-
-========== show pon optical-info ==========
-show pon optical-info
-% Unknown command.
-gpon-olt-Estero-Medio(config-pon-0/1)#
-
-========== show pon optical ==========
-show pon optical
-% Command incomplete.
-gpon-olt-Estero-Medio(config-pon-0/1)#
-
-========== show onu ? ==========
-show onu 
-  <1-128>      Specify onuid index num.
-  <onu_list>   Specify onu list. 1,3,5-10,12,16 etc.
-  state        onu working state.
-  info         onu base information.
-  application  Application configuration.
-  auto-find    aging time.
-  auto-learn   auto learn
-  detail-info  detail information
-  gemport      GPON ONU gemport
-  monitor      Monitor ONU statistics
-  time-stamp   onu time stamp
-gpon-olt-Estero-Medio(config-pon-0/1)# show onu 
-% Command incomplete.
-gpon-olt-Estero-Medio(config-pon-0/1)#
-
-========== show onu state ==========
-show onu state
-OnuIndex    Admin State    OMCC State    Phase State    Serial Number
----------------------------------------------------------------
-GPON0/1:1[12Cenable[27Cenable[41Cworking[56CHWTC1fbd8a77
-GPON0/1:2[12Cenable[27Cenable[41Cworking[56CHWTC086932a5
-GPON0/1:3[12Cenable[27Cenable[41Cworking[56CHWTC69daa373
-GPON0/1:4[12Cenable[27Cenable[41Cworking[56CHWTCb153a8b2
-GPON0/1:5[12Cenable[27Cenable[41Cworking[56CHWTC543020a3
-GPON0/1:6[12Cenable[27Cenable[41Cworking[56CHWTC052ec744
-GPON0/1:7[12Cenable[27Cenable[41Cworking[56CHWTCd9b1a55c
-GPON0/1:8[12Cenable[27Cenable[41Cworking[56CHWTCfb65239c
-GPON0/1:9[12Cenable[27Cenable[41Cworking[56CHWTC76a469b2
-GPON0/1:10[12Cenable[27Cenable[41Cworking[56CHWTC3bb1005c
-GPON0/1:11[12Cenable[27Cenable[41Cworking[56CHWTC9151bba6
-GPON0/1:12[12Cenable[27Cenable[41Cworking[56CHWTCc8bfc373
-GPON0/1:13[12Cenable[27Cenable[41Cworking[56CHWTCaa17db45
-GPON0/1:14[12Cenable[27Cenable[41Cworking[56CHWTCc8bfc40d
-GPON0/1:15[12Cenable[27Cenable[41Cworking[56CSKYWb8102c4f
-GPON0/1:16[12Cenable[27Cenable[41Cworking[56CHWTCf17c76b2
-GPON0/1:17[12Cenable[27Cenable[41Cworking[56CCDTCa6d54f8b
-GPON0/1:18[12Cenable[27Cenable[41Cworking[56CHWTCfb61e65a
-GPON0/1:19[12Cenable[27Cenable[41Cworking[56CHWTCc8bfc8c0
-GPON0/1:20[12Cenable[27Cenable[41Cworking[56CHWTC1d0e86a1
-GPON0/1:21[12Cenable[27Cenable[41Cworking[56CHWTCffb215a2
-GPON0/1:22[12Cenable[27Cenable[41Cworking[56CHWTCc8bfc8ee
-GPON0/1:23[12Cenable[27Cenable[41Cworking[56CHWTC7584d88a
-GPON0/1:24[12Cenable[27Cenable[41Cworking[56CHWTC054cc2a1
-GPON0/1:25[12Cenable[27Cenable[41Cworking[56CSKYWb8111543
-GPON0/1:26[12Cenable[27Cenable[41Cworking[56CHWTC70c6e3a2
-GPON0/1:27[12Cenable[27Cenable[41Cworking[56CHWTC7c723b9a
-GPON0/1:28[12Cenable[27Cenable[41Cworking[56CHWTC008a9bee
-GPON0/1:29[12Cenable[27Cenable[41Cworking[56CHWTC8c7cab9d
-GPON0/1:30[12Cenable[27Cenable[41Cworking[56CCDTCa6d5578b
-GPON0/1:31[12Cenable[27Cdisable[41Cdyinggasp[56CHWTCc95c17b2
-GPON0/1:32[12Cenable[27Cenable[41Cworking[56CHWTC1b4f2b2b
-GPON0/1:33[12Cenable[27Cdisable[41Coffline[56CHWTC1b7e312b
-GPON0/1:34[12Cenable[27Cenable[41Cworking[56CHWTCf6fd4b48
-GPON0/1:35[12Cenable[27Cenable[41Cworking[56CSKYWb80ffad5
-GPON0/1:36[12Cenable[27Cenable[41Cworking[56CHWTC9edfdfa2
-GPON0/1:37[12Cenable[27Cenable[41Cworking[56CHWTCa045172a
-GPON0/1:38[12Cenable[27Cenable[41Cworking[56CHWTC470cee8d
-GPON0/1:39[12Cenable[27Cenable[41Cworking[56CHWTC548b808a
-GPON0/1:40[12Cenable[27Cenable[41Cworking[56CHWTC611f699b
-GPON0/1:41[12Cenable[27Cenable[41Cworking[56CSKYWb811434f
-GPON0/1:42[12Cenable[27Cenable[41Cworking[56CHWTC173261a2
-GPON0/1:43[12Cenable[27Cdisable[41Coffline[56CHWTC1af7512b
-GPON0/1:44[12Cenable[27Cenable[41Cworking[56CHWTC1af9db2b
-pon: 1 total: 44 working: 41
-
-gpon-olt-Estero-Medio(config-pon-0/1)#
-
-========== show onu 1 ? ==========
-show onu 1 
-  pri           Specify private omci information.
-  time-stamp    onu time stamp.
-  video         Specify video(CATV) configuration.
-  video_ani     Specify video_ani.
-  ber           Specify bit-err-ratio.
-  capability    Show capability.
-  desc          onu description.
-  distance      Distance information.
-  eth           Specify eth configuration.
-  gemport       GPON ONU gemport
-  igmp          Specify igmp configuration.
-  optical_info  Optical information.
-  profile       Specify profile information.
-  statistics    show onu traffic statistics
-gpon-olt-Estero-Medio(config-pon-0/1)# show onu 1 
-% Command incomplete.
-gpon-olt-Estero-Medio(config-pon-0/1)#
-
-========== show onu 1 ==========
-show onu 1
-% Command incomplete.
-gpon-olt-Estero-Medio(config-pon-0/1)#
-
-========== show onu 1 detail-info ==========
-show onu 1 detail-info
-% Unknown command.
-gpon-olt-Estero-Medio(config-pon-0/1)#
-
-========== show onu optical-info ==========
-show onu optical-info
-% Unknown command.
-gpon-olt-Estero-Medio(config-pon-0/1)#
-
-========== show onu optical ==========
-show onu optical
-% Unknown command.
-gpon-olt-Estero-Medio(config-pon-0/1)#
-
-========== show onu monitor ==========
-show onu monitor
-% Command incomplete.
-gpon-olt-Estero-Medio(config-pon-0/1)#
-
-========== exit ==========
-exit
-gpon-olt-Estero-Medio(config)#
