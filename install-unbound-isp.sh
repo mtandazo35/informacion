@@ -5,7 +5,6 @@
 #
 # Qué instala:
 #   - Unbound 1.22+ recursivo puro (DNSSEC, RFC 5011/8145/8198)
-#   - RPZ: bloqueo de malware/phishing/botnet (~1M dominios, timer 03:15 AM)
 #   - DoT (853) y DoH (8053) con cert Let's Encrypt automático
 #   - Query logging → /var/log/unbound/queries.log (90 días)
 #   - Prometheus + node_exporter + unbound_exporter + log_exporter
@@ -30,7 +29,6 @@ ask()  { echo -e "${CYAN}${BOLD}→${NC} $1"; }
 # ── Variables (se llenan por menú o por valores hardcodeados) ──────────────────
 CLIENT_NETWORKS=()
 DOT_DOMAIN=""
-INSTALL_RPZ=true
 
 # ==============================================================================
 # MENÚ INTERACTIVO
@@ -78,7 +76,7 @@ interactive_menu() {
     echo ""
 
     # ── PASO 1: Redes de clientes ───────────────────────────────────────────────
-    echo -e "${BOLD}[1/3] REDES CON ACCESO AL DNS${NC}"
+    echo -e "${BOLD}[1/2] REDES CON ACCESO AL DNS${NC}"
     echo -e "      Ingresa las IPs o rangos que podrán consultar este servidor."
     echo -e "      Formatos válidos:  ${CYAN}203.0.113.0/24${NC}  •  ${CYAN}1.2.3.4${NC}  •  ${CYAN}2803:2540::/32${NC}"
     echo -e "      Escribe ${CYAN}todos${NC} para acceso público (0.0.0.0/0)."
@@ -132,7 +130,7 @@ interactive_menu() {
     echo ""
 
     # ── PASO 2: Dominio DoH/DoT ─────────────────────────────────────────────────
-    echo -e "${BOLD}[2/3] DOMINIO PARA DoH / DoT  (DNS-over-HTTPS / DNS-over-TLS)${NC}"
+    echo -e "${BOLD}[2/2] DOMINIO PARA DoH / DoT  (DNS-over-HTTPS / DNS-over-TLS)${NC}"
     echo -e "      Requisito: el dominio debe tener un registro ${CYAN}A → ${SERVER_IP}${NC}"
     echo -e "      El instalador obtiene el certificado Let's Encrypt automáticamente."
     echo ""
@@ -153,23 +151,6 @@ interactive_menu() {
     fi
     echo ""
 
-    # ── PASO 3: RPZ ─────────────────────────────────────────────────────────────
-    echo -e "${BOLD}[3/3] BLOQUEO DE AMENAZAS (RPZ)${NC}"
-    echo -e "      Bloquea malware, phishing y botnets (~1M dominios)."
-    echo -e "      Requiere ~700MB RAM extra. Timer de actualización: 03:15 AM diario."
-    echo ""
-
-    local ram_warn=""
-    [[ $RAM_MB -lt 1500 ]] && ram_warn=" ${YELLOW}[!] RAM < 1.5GB — considera false${NC}"
-    ask "¿Habilitar RPZ? [S/n]:${ram_warn} "
-    read -r input
-    input=$(echo "$input" | tr '[:upper:]' '[:lower:]' | xargs)
-    case "$input" in
-        n|no) INSTALL_RPZ=false; info "RPZ deshabilitado." ;;
-        *)    INSTALL_RPZ=true;  ok "RPZ habilitado." ;;
-    esac
-    echo ""
-
     # ── RESUMEN Y CONFIRMACIÓN ──────────────────────────────────────────────────
     echo -e "${BOLD}────────────────────────────────────────────────────────────${NC}"
     echo -e "${BOLD}  RESUMEN DE INSTALACIÓN${NC}"
@@ -181,7 +162,6 @@ interactive_menu() {
     else
         echo -e "  DoH/DoT:          deshabilitado"
     fi
-    echo -e "  RPZ:              $( [[ "$INSTALL_RPZ" == true ]] && echo "${CYAN}sí${NC} (~1M dominios bloqueados)" || echo "no")"
     echo -e "  RAM:              ${RAM_MB}MB  •  Cache: $(( RAM_MB/16 ))m msg + $(( RAM_MB/8 ))m rrset"
     echo -e "  DNSSEC:           RFC 5011 + RFC 8198 (ICANN compliant)"
     echo -e "  Prometheus:       ${CYAN}http://${SERVER_IP}:9090${NC}"
@@ -246,7 +226,7 @@ echo -e "${BLUE}║        Unbound DNS ISP — Instalando...                    
 echo -e "${BLUE}╚═══════════════════════════════════════════════════════════╝${NC}"
 echo ""
 info "IP: ${SERVER_IP}  •  vCPU: ${NUM_THREADS}  •  RAM: ${RAM_MB}MB  •  IPv6: ${DO_IP6}"
-info "Cache: ${MSG_CACHE_SIZE} msg + ${RRSET_CACHE_SIZE} rrset  •  RPZ: ${INSTALL_RPZ}  •  DoH: ${DOT_DOMAIN:-no}"
+info "Cache: ${MSG_CACHE_SIZE} msg + ${RRSET_CACHE_SIZE} rrset  •  DoH: ${DOT_DOMAIN:-no}"
 echo ""
 
 # ==============================================================================
@@ -521,261 +501,6 @@ HOOK
     fi
 else
     info "DoT/DoH deshabilitado."
-fi
-
-# ==============================================================================
-# 3c. RPZ — Threat Intelligence Blocking
-# ==============================================================================
-if [[ "$INSTALL_RPZ" == true ]]; then
-    log "Configurando RPZ (malware / phishing / botnet)..."
-
-    RPZ_DIR="/etc/unbound/rpz"
-    mkdir -p "${RPZ_DIR}/zones" "${RPZ_DIR}/work"
-
-    cat > "${RPZ_DIR}/zones/whitelist.rpz.zone" << 'WLZONE'
-$ORIGIN rpz-whitelist.maat.local.
-$TTL 3600
-@   SOA rpz-whitelist.maat.local. admin.rpz-whitelist.maat.local. ( 2024010100 3600 900 604800 60 )
-    NS  localhost.
-WLZONE
-
-    for zone in malware phishing botnet; do
-        local_origin="rpz-${zone}.maat.local"
-        cat > "${RPZ_DIR}/zones/${zone}.rpz.zone" << ZONEEOF
-\$ORIGIN ${local_origin}.
-\$TTL 3600
-@   SOA ${local_origin}. admin.${local_origin}. ( $(date +%Y%m%d%H) 3600 900 604800 60 )
-    NS  localhost.
-ZONEEOF
-        chown unbound:unbound "${RPZ_DIR}/zones/${zone}.rpz.zone"
-    done
-    chown unbound:unbound "${RPZ_DIR}/zones/whitelist.rpz.zone"
-
-    cat > /etc/unbound/unbound.conf.d/rpz.conf << 'RPZCONF'
-rpz:
-    name: "rpz-whitelist.maat.local"
-    zonefile: "/etc/unbound/rpz/zones/whitelist.rpz.zone"
-    rpz-action-override: passthru
-    rpz-log: yes
-    rpz-log-name: "whitelist"
-
-rpz:
-    name: "rpz-botnet.maat.local"
-    zonefile: "/etc/unbound/rpz/zones/botnet.rpz.zone"
-    rpz-action-override: nxdomain
-    rpz-log: yes
-    rpz-log-name: "botnet"
-
-rpz:
-    name: "rpz-malware.maat.local"
-    zonefile: "/etc/unbound/rpz/zones/malware.rpz.zone"
-    rpz-action-override: nxdomain
-    rpz-log: yes
-    rpz-log-name: "malware"
-
-rpz:
-    name: "rpz-phishing.maat.local"
-    zonefile: "/etc/unbound/rpz/zones/phishing.rpz.zone"
-    rpz-action-override: nxdomain
-    rpz-log: yes
-    rpz-log-name: "phishing"
-RPZCONF
-
-    sed -i 's/module-config: "validator iterator"/module-config: "respip validator iterator"/' \
-        /etc/unbound/unbound.conf
-    echo 'include: "/etc/unbound/unbound.conf.d/rpz.conf"' >> /etc/unbound/unbound.conf
-
-    cat > /usr/local/bin/rpz-update.sh << 'RPZSCRIPT'
-#!/bin/bash
-set -euo pipefail
-
-RPZ_DIR="/etc/unbound/rpz"
-WORK_DIR="${RPZ_DIR}/work"
-ZONES_DIR="${RPZ_DIR}/zones"
-TIMEOUT=60
-MIN_DOMAINS=50
-MIN_DOMAINS_C2=5
-
-log()  { echo "$(date -Iseconds) [INFO]  $1"; logger -t rpz-update "$1" 2>/dev/null || true; }
-warn() { echo "$(date -Iseconds) [WARN]  $1"; logger -t rpz-update "WARN: $1" 2>/dev/null || true; }
-
-download_list() {
-    local url="$1" dest="$2" desc="$3"
-    for i in 1 2 3; do
-        if curl -sSL --max-time "$TIMEOUT" --retry 2 \
-                -A "UnboundRPZ/1.0 ISP-DNS-Filter" \
-                -o "$dest" "$url" 2>/dev/null; then
-            [[ $(wc -c < "$dest") -gt 500 ]] && return 0
-            warn "$desc: respuesta muy pequeña (intento $i/3)"
-        else
-            warn "$desc: error de red (intento $i/3)"
-        fi
-        sleep 10
-    done
-    return 1
-}
-
-convert_to_rpz() {
-    local input="$1" zone_name="$2" output="$3"
-    local serial; serial=$(date +%Y%m%d%H)
-    {
-        echo "\$ORIGIN ${zone_name}."
-        echo "\$TTL 3600"
-        echo "@   SOA ${zone_name}. admin.${zone_name}. ( ${serial} 3600 900 604800 60 )"
-        echo "    NS  localhost."
-    } > "$output"
-    local count
-    count=$(awk '
-        function ok_domain(d,    n,parts,i,l) {
-            if (d=="" || d~/^localhost/ || index(d,".")==0) return 0
-            if (d~/^[0-9.]+$/ || length(d)>200) return 0
-            if (d !~ /^[a-zA-Z0-9._-]+$/) return 0
-            n = split(d, parts, ".")
-            if (n < 2) return 0
-            for (i=1; i<=n; i++) {
-                l = length(parts[i])
-                if (l == 0 || l > 63) return 0
-            }
-            return 1
-        }
-        /^[[:space:]]*#/ { next }
-        /^[[:space:]]*$/ { next }
-        /^(0[.]0[.]0[.]0|127[.][0-9]|::1)[[:space:]]/ {
-            d=$2; sub(/[.]$/, "", d)
-            if (ok_domain(d)) { print tolower(d) " 60 CNAME ."; c++ }
-            next
-        }
-        NF>=1 && $1 !~ /^#/ {
-            d=$1; sub(/[.]$/, "", d)
-            if (ok_domain(d)) { print tolower(d) " 60 CNAME ."; c++ }
-        }
-        END { print c+0 > "/tmp/rpz_awk_count" }
-    ' "$input" >> "$output"
-    cat /tmp/rpz_awk_count 2>/dev/null || echo 0)
-    echo "${count:-0}"
-}
-
-update_malware() {
-    log "Actualizando zona: malware"
-    local combined="${WORK_DIR}/malware.combined.tmp"; > "$combined"
-    local ok=false
-    local f="${WORK_DIR}/hagezi_pro.tmp"
-    download_list \
-        "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/hosts/pro.txt" \
-        "$f" "Hagezi Pro" && {
-        grep -v '^#' "$f" >> "$combined" 2>/dev/null || true
-        ok=true; log "  Hagezi Pro: OK"
-    } || warn "  Hagezi Pro: fallo"
-    [[ "$ok" == false ]] && { warn "Malware: todas las fuentes fallaron"; return 1; }
-    sort -u "$combined" -o "$combined"
-    local new="${WORK_DIR}/malware.rpz.zone.new"
-    local count; count=$(convert_to_rpz "$combined" "rpz-malware.maat.local" "$new")
-    [[ "$count" -lt "$MIN_DOMAINS" ]] && { warn "Malware: solo $count dominios"; return 1; }
-    mv "$new" "${ZONES_DIR}/malware.rpz.zone"
-    chown unbound:unbound "${ZONES_DIR}/malware.rpz.zone"
-    log "  Malware: $count dominios"
-}
-
-update_phishing() {
-    log "Actualizando zona: phishing"
-    local combined="${WORK_DIR}/phishing.combined.tmp"; > "$combined"
-    local ok=false
-    local f="${WORK_DIR}/phishdb.tmp"
-    download_list \
-        "https://raw.githubusercontent.com/mitchellkrogza/Phishing.Database/master/phishing-domains-ACTIVE.txt" \
-        "$f" "Phishing.Database" && {
-        grep -v '^#' "$f" >> "$combined" 2>/dev/null || true
-        ok=true; log "  Phishing.Database: OK"
-    } || warn "  Phishing.Database: fallo"
-    local f2="${WORK_DIR}/phishing_army.tmp"
-    download_list \
-        "https://phishing.army/download/phishing_army_blocklist_extended.txt" \
-        "$f2" "Phishing Army" && {
-        grep -v '^#' "$f2" >> "$combined" 2>/dev/null || true
-        ok=true; log "  Phishing Army: OK"
-    } || warn "  Phishing Army: fallo"
-    [[ "$ok" == false ]] && { warn "Phishing: todas las fuentes fallaron"; return 1; }
-    sort -u "$combined" -o "$combined"
-    local new="${WORK_DIR}/phishing.rpz.zone.new"
-    local count; count=$(convert_to_rpz "$combined" "rpz-phishing.maat.local" "$new")
-    [[ "$count" -lt "$MIN_DOMAINS" ]] && { warn "Phishing: solo $count dominios"; return 1; }
-    mv "$new" "${ZONES_DIR}/phishing.rpz.zone"
-    chown unbound:unbound "${ZONES_DIR}/phishing.rpz.zone"
-    log "  Phishing: $count dominios"
-}
-
-update_botnet() {
-    log "Actualizando zona: botnet"
-    local combined="${WORK_DIR}/botnet.combined.tmp"; > "$combined"
-    local ok=false
-    local f="${WORK_DIR}/threatfox.tmp"
-    download_list \
-        "https://threatfox.abuse.ch/export/csv/domains/recent/" \
-        "$f" "ThreatFox C2" && {
-        grep -v '^#' "$f" | awk -F',' 'NF>2 {gsub(/"/, "", $3); gsub(/ /, "", $3); if ($3!="") print $3}' \
-            >> "$combined" 2>/dev/null || true
-        ok=true; log "  ThreatFox C2: OK"
-    } || warn "  ThreatFox C2: fallo"
-    [[ "$ok" == false ]] && { warn "Botnet: todas las fuentes fallaron"; return 1; }
-    sort -u "$combined" -o "$combined"
-    local new="${WORK_DIR}/botnet.rpz.zone.new"
-    local count; count=$(convert_to_rpz "$combined" "rpz-botnet.maat.local" "$new")
-    [[ "$count" -lt "$MIN_DOMAINS_C2" ]] && { warn "Botnet: solo $count dominios"; return 1; }
-    mv "$new" "${ZONES_DIR}/botnet.rpz.zone"
-    chown unbound:unbound "${ZONES_DIR}/botnet.rpz.zone"
-    log "  Botnet: $count dominios"
-}
-
-log "=== RPZ Update iniciado: $(date) ==="
-mkdir -p "$WORK_DIR" "$ZONES_DIR"
-UPDATED=0; FAILED=0
-update_malware  && UPDATED=$((UPDATED+1)) || FAILED=$((FAILED+1))
-update_phishing && UPDATED=$((UPDATED+1)) || FAILED=$((FAILED+1))
-update_botnet   && UPDATED=$((UPDATED+1)) || FAILED=$((FAILED+1))
-if [[ "$UPDATED" -gt 0 ]]; then
-    log "Recargando Unbound ($UPDATED zonas actualizadas)..."
-    unbound-control reload 2>/dev/null || systemctl restart unbound
-    sleep 3
-    systemctl is-active unbound >/dev/null || log "ADVERTENCIA: Unbound no está activo tras reload"
-fi
-rm -f "${WORK_DIR}"/*.tmp 2>/dev/null || true
-log "=== Completado: $UPDATED OK, $FAILED FAIL ==="
-RPZSCRIPT
-
-    chmod 755 /usr/local/bin/rpz-update.sh
-
-    cat > /etc/systemd/system/rpz-update.service << 'RPZSVC'
-[Unit]
-Description=Unbound RPZ Blocklist Update
-After=network-online.target unbound.service
-Wants=network-online.target
-
-[Service]
-Type=oneshot
-ExecStart=/usr/local/bin/rpz-update.sh
-User=root
-TimeoutSec=600
-RPZSVC
-
-    cat > /etc/systemd/system/rpz-update.timer << 'RPZTIMER'
-[Unit]
-Description=Unbound RPZ Daily Update
-
-[Timer]
-OnCalendar=*-*-* 03:15:00
-RandomizedDelaySec=1800
-Persistent=true
-
-[Install]
-WantedBy=timers.target
-RPZTIMER
-
-    systemctl daemon-reload
-    systemctl enable rpz-update.timer
-    systemctl start rpz-update.timer
-    log "  RPZ instalado. Timer 03:15 AM. Para poblar ahora: systemctl start rpz-update.service"
-else
-    info "RPZ deshabilitado."
 fi
 
 # ==============================================================================
@@ -1097,10 +822,6 @@ check "RFC 5011 KSK-2017"          "grep -q 'id = 20326.*VALID' /var/lib/unbound
 if [[ "$DO_IP6" == "yes" ]]; then
     check "IPv6 escucha"           "dig @::1 google.com A +short +time=5 | grep -q '\\.'"
 fi
-if [[ "$INSTALL_RPZ" == true ]]; then
-    check "RPZ módulo respip"      "unbound-control status 2>/dev/null | grep -q 'respip'"
-    check "RPZ timer habilitado"   "systemctl is-enabled rpz-update.timer 2>/dev/null | grep -q 'enabled'"
-fi
 if [[ -n "$DOT_DOMAIN" && -f /etc/unbound/tls/fullchain.pem ]]; then
     check "DoT cert presente"      "openssl x509 -in /etc/unbound/tls/fullchain.pem -noout -subject 2>/dev/null | grep -q '${DOT_DOMAIN}'"
     check "DoT puerto 853"         "ss -tlnp | grep -q ':853'"
@@ -1135,10 +856,6 @@ echo -e "${BLUE}║${NC}  DoH:              https://${DOT_DOMAIN}:8053/dns-query
 fi
 echo -e "${BLUE}║${NC}  Prometheus:       http://${SERVER_IP}:${PROMETHEUS_PORT}"
 echo -e "${BLUE}║${NC}  Logs DNS:         /var/log/unbound/queries.log (90 días)"
-if [[ "$INSTALL_RPZ" == true ]]; then
-echo -e "${BLUE}║${NC}  RPZ:              malware+phishing+botnet | timer 03:15 AM"
-echo -e "${BLUE}║${NC}                    Poblar ahora: systemctl start rpz-update.service"
-fi
 echo -e "${BLUE}║${NC}  DNSSEC:           RFC 5011 auto-rollover + RFC 8198 NSEC"
 echo -e "${BLUE}║${NC}  Cache:            ${MSG_CACHE_SIZE} msg + ${RRSET_CACHE_SIZE} rrset (${NUM_THREADS} threads)"
 echo -e "${BLUE}╠═══════════════════════════════════════════════════════════╣${NC}"
