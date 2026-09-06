@@ -41,8 +41,12 @@ Estoy desarrollando mis ideas con **IA** — automatización de redes, asistente
 ### 📊 Actividad en GitHub
 
 <p align="center">
-  <img width="48%" src="https://github-readme-stats.vercel.app/api?username=manolinxxx&show_icons=true&count_private=true&hide_border=true&theme=tokyonight&include_all_commits=true" alt="stats" />
-  <img width="48%" src="https://github-readme-streak-stats.herokuapp.com?user=manolinxxx&hide_border=true&theme=tokyonight" alt="streak" />
+  <img src="https://streak-stats.demolab.com?user=mtandazo35&hide_border=true&theme=tokyonight" alt="Racha de contribuciones" />
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/github/followers/mtandazo35?style=for-the-badge&logo=github&label=Seguidores&labelColor=1a1b27&color=70a5fd" alt="Seguidores" />
+  <img src="https://img.shields.io/github/stars/mtandazo35?style=for-the-badge&logo=github&label=Estrellas&labelColor=1a1b27&color=70a5fd" alt="Estrellas" />
 </p>
 
 ### 📫 Contacto
